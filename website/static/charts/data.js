@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795476028390,
+  "lastUpdate": 1795476113371,
   "repoUrl": "https://github.com/microsoft/garnet",
   "entries": {
     "Benchmark": [],
@@ -833353,174 +833353,6 @@ window.BENCHMARK_DATA = {
             "username": "web-flow"
           },
           "distinct": true,
-          "id": "d86c871792b9e4cc37c453a7bd5e8d3e1c8122c4",
-          "message": "Split `XVIMPORT FINISH` into `XVIMPORT VERIFY` and `XVIMPORT FINISH` (#2306)\n\n* bump diskann-garnet, add new exports\n\n* first pass at splitting xvimport finish into two options; only finish is actually routed at the moment\n\n* start on a failing test for imports\n\n* a number of fixes for broken up import commands\n\n* validate new xvimport options\n\n* issue verifications in existing tests\n\n* add a replica test for the new xvimport + verify + finish workflow\n\n* update XVIMPORT docs\n\n* address feedback\n\n* formatting\n\n* rework VINFO to indicate if an import has failed; failing test for replication of failed imports\n\n* fixes for replication of failed import state for Vector Sets\n\n* update docs\n\n* more doc correction",
-          "timestamp": "2026-11-04T10:46:29-05:00",
-          "tree_id": "20d67466b56a01f52a815363b795afebf1adba00",
-          "url": "https://github.com/microsoft/garnet/commit/d86c871792b9e4cc37c453a7bd5e8d3e1c8122c4"
-        },
-        "date": 1793807851473,
-        "tool": "benchmarkdotnet",
-        "benches": [
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: AAD)",
-            "value": 14376.590372721354,
-            "unit": "ns",
-            "range": "± 102.4054133640623"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: AAD)",
-            "value": 18089.932861328125,
-            "unit": "ns",
-            "range": "± 166.65337402973995"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: AAD)",
-            "value": 19254.466959635418,
-            "unit": "ns",
-            "range": "± 151.8022403223325"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: AAD)",
-            "value": 18027.60528564453,
-            "unit": "ns",
-            "range": "± 141.2253744612243"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: AAD)",
-            "value": 8348.622131347656,
-            "unit": "ns",
-            "range": "± 116.00148505647772"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: AAD)",
-            "value": 15467.721557617188,
-            "unit": "ns",
-            "range": "± 124.19772531977847"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: ACL)",
-            "value": 14036.549275716146,
-            "unit": "ns",
-            "range": "± 94.76981773345257"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: ACL)",
-            "value": 17914.421793619793,
-            "unit": "ns",
-            "range": "± 103.89911270665598"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: ACL)",
-            "value": 18830.77870686849,
-            "unit": "ns",
-            "range": "± 190.7610160169676"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: ACL)",
-            "value": 18480.5707804362,
-            "unit": "ns",
-            "range": "± 129.70077612411166"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: ACL)",
-            "value": 8137.369791666667,
-            "unit": "ns",
-            "range": "± 44.68193696148993"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: ACL)",
-            "value": 17399.488525390625,
-            "unit": "ns",
-            "range": "± 137.83969735086671"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: AOF)",
-            "value": 13894.539489746094,
-            "unit": "ns",
-            "range": "± 98.32214705275425"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: AOF)",
-            "value": 24258.304545084637,
-            "unit": "ns",
-            "range": "± 153.6470178535567"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: AOF)",
-            "value": 25942.99504206731,
-            "unit": "ns",
-            "range": "± 701.0250356574995"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: AOF)",
-            "value": 20618.277413504464,
-            "unit": "ns",
-            "range": "± 279.65064355316747"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: AOF)",
-            "value": 8457.422652334537,
-            "unit": "ns",
-            "range": "± 351.4345879518109"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: AOF)",
-            "value": 15626.783650716146,
-            "unit": "ns",
-            "range": "± 165.6370067472396"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: None)",
-            "value": 13745.233917236328,
-            "unit": "ns",
-            "range": "± 85.15861873797874"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: None)",
-            "value": 17354.793294270832,
-            "unit": "ns",
-            "range": "± 195.42666853060123"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: None)",
-            "value": 20135.586547851562,
-            "unit": "ns",
-            "range": "± 98.74832111934246"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: None)",
-            "value": 18219.375,
-            "unit": "ns",
-            "range": "± 194.56347956324822"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: None)",
-            "value": 8124.716796875,
-            "unit": "ns",
-            "range": "± 104.258192217042"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: None)",
-            "value": 15023.346862792969,
-            "unit": "ns",
-            "range": "± 82.33269631373204"
-          }
-        ]
-      },
-      {
-        "commit": {
-          "author": {
-            "email": "kmontrose@microsoft.com",
-            "name": "kevin-montrose",
-            "username": "kevin-montrose"
-          },
-          "committer": {
-            "email": "noreply@github.com",
-            "name": "GitHub",
-            "username": "web-flow"
-          },
-          "distinct": true,
           "id": "6f39d29e515f384b2eb51eca3eb93d3f6f552631",
           "message": "bump version to 2.2.6 (#2352)",
           "timestamp": "2026-11-04T12:55:24-05:00",
@@ -841737,6 +841569,174 @@ window.BENCHMARK_DATA = {
             "value": 16451.159057617188,
             "unit": "ns",
             "range": "± 126.19191751008155"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "15467143+TedHartMS@users.noreply.github.com",
+            "name": "Ted Hart",
+            "username": "TedHartMS"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "933ea4272416d952cc0e6af77a4f76d3217bfcd5",
+          "message": "[Tsavorite] Compaction and lookup-scan correctness fixes (#2427)\n\n* [Tsavorite] Skip a compaction copy whose hash-index tag is absent\n\nCompaction's conditional copy to the tail treated a missing hash-index tag\n(FindTag returning false, which the conditional lookup reports as NOTFOUND)\nas permission to copy the source record to the tail. The insertion then went\nthrough the bucket entry that FindTag had cleared and threw\nNullReferenceException in TryCopyToTail. Creating a tag instead would make an\nunreachable key, for example one whose record was elided, readable again.\n\nAn absent tag now means the source is skipped, at each place it can be seen:\n- the initial copy in CompactionConditionalCopyToTail, before allocating or\n  issuing IO;\n- ContinuePendingConditionalCopyToTail, for a tag that disappears while the\n  copy's IO is pending;\n- ConditionalCopyToTail's retry lookup, instead of retrying the insertion.\nFindTag's documentation now says which fields stay usable when it returns\nfalse.\n\nTests: MissingTagTests.CompactionSkipsMissingTag (scan and lookup\ncompaction, both allocators, resident and evicted sources) and\nPendingCompactionSkipsMissingTag (the tag removed while the copy's IO is\npending), in a new test.recovery file. All ten cases threw\nNullReferenceException before the fix. The retry-path guard has no\ndeterministic test.\n\n* [Tsavorite] Skip elided and unreachable records in lookup scans\n\nA bounded lookup scan (streaming checkpoint phase 2, slot migration, and\nIterateLookupSnapshot) includes closed records, so that it can return a\nkey's sealed, valid older version below its bound. It also returned invalid\nrecords:\n- an elided record, which an update or delete removed from its hash chain\n  and marked sealed and invalid, was suppressed only if its key's hash-index\n  tag was absent; once another key with the same tag held the slot, the\n  scan reported a deleted key;\n- an invalid record that is not sealed, such as a later-version record that\n  recovery discarded, was reported, with possibly stale object ids;\n- an invalid record read from disk holds stale object ids, since a flush\n  writes no objects for it; copying or disposing them fails or frees another\n  record's object.\nA scan's lookup that went to disk also ignored the scan's upper address, so\nthe key's record at or past the bound suppressed its version below it.\n\nNow:\n- Lookup iterators skip invalid records that are not sealed before copying\n  their fields (InvalidRecordScanFilter.SkipUnsealed), and recheck under the\n  scan lock. The object iterator also skips invalid disk records that still\n  have heap fields.\n- Streaming checkpoint phase 2 skips every invalid record (SkipAll), through\n  an internal ScanCursor overload with skipInvalidRecords.\n- ConditionalScanPush pushes an invalid, sealed record only if its key has a\n  record at or above the bound (a later version or a tombstone), or if\n  finding one needs IO.\n- A disk-pending conditional lookup does not match a record at or above its\n  exclusive upper address.\n- An absent tag still skips the record, but no longer asserts that it is\n  invalid: a valid record can have no tag. For example, an RMW that copies\n  an already-flushed record to the tail can elide it in memory while its\n  disk image stays valid; deleting the copy in place then empties the key's\n  hash slot, and once the page is evicted, a scan reads the old image as a\n  valid record with no tag. Debug builds failed the assertion; Release\n  builds skipped the record.\nstate-machine.md describes phase 2's handling of invalid records.\n\nTests: BoundedLookupScanTests (BoundedLookupSkipsElidedRecords,\nBoundedLookupReportsKeyElidedAfterBound,\nBoundedLookupSkipsUnsealedInvalidRecord,\nStreamingSkipsElidedRecordOfKeyRecreatedAfterSample and\nBoundedLookupRetainsSealedValidVersion) and\nMissingTagTests.LookupScanSkipsMissingTag. Without the fix, 26 of their 32\ncases fail: scans report deleted keys or stream a deleted value, an evicted\nlarge-key case fails a Debug assertion on a stale object id, evicted cases\nlose a live key to its record past the bound, and the absent-tag cases fail\nthe assertion in Debug. The other 6, in-memory cases that keep a live key,\nalso pass on main; they guard against filtering out live keys.\n\n* [Tsavorite] Skip an invalid disk record's object fields in every scan\n\nAn invalid record's object and overflow fields on disk still hold ids into\nthe ObjectIdMap of the page that was flushed: the flush writes none of its\nobjects, and loading a scan frame deserializes objects only for valid\nrecords. ObjectScanIterator skipped such a record only in lookup scans, so a\npull scan that includes closed records (Log.Scan with includeClosedRecords)\nreturned it, read its stale ids against the scan's own map, and freed them\nwhen moving on. Its key could read as another record's key, and that\nrecord's object slot was cleared.\n\nThe guard now applies whatever the scan's invalid-record filter, as\nObjectScanFrame.Clear already does, and Log.Scan's documentation says so.\n\nTest: ClosedRecordScanTests.ScanSkipsEvictedInvalidRecordWithOverflowKey.\nBefore the fix the scan returned the elided record with the live record's\nkey, then threw NullReferenceException reading the live record's key.\n\n* Bump version to 2.2.14\n\n---------\n\nCo-authored-by: Badrish Chandramouli <badrishc@microsoft.com>",
+          "timestamp": "2026-11-23T15:08:30-08:00",
+          "tree_id": "b5a3515eefd8e03a83ff4294d0d3add1db63e77c",
+          "url": "https://github.com/microsoft/garnet/commit/933ea4272416d952cc0e6af77a4f76d3217bfcd5"
+        },
+        "date": 1795476091237,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: AAD)",
+            "value": 20047.744750976562,
+            "unit": "ns",
+            "range": "± 86.1384699833383"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: AAD)",
+            "value": 26709.34539794922,
+            "unit": "ns",
+            "range": "± 207.5962486603644"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: AAD)",
+            "value": 29764.05008951823,
+            "unit": "ns",
+            "range": "± 273.22011744870764"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: AAD)",
+            "value": 26264.52425443209,
+            "unit": "ns",
+            "range": "± 122.4088644769063"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: AAD)",
+            "value": 10577.112872783955,
+            "unit": "ns",
+            "range": "± 107.40902827559832"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: AAD)",
+            "value": 23163.988240559895,
+            "unit": "ns",
+            "range": "± 471.18921877240774"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: ACL)",
+            "value": 20930.230712890625,
+            "unit": "ns",
+            "range": "± 276.77426836825657"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: ACL)",
+            "value": 26756.905893179086,
+            "unit": "ns",
+            "range": "± 95.56305707719224"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: ACL)",
+            "value": 27914.5991734096,
+            "unit": "ns",
+            "range": "± 212.77936047151397"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: ACL)",
+            "value": 26865.9907749721,
+            "unit": "ns",
+            "range": "± 176.8631523344139"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: ACL)",
+            "value": 12491.727905273438,
+            "unit": "ns",
+            "range": "± 140.4097066290693"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: ACL)",
+            "value": 25345.596099318118,
+            "unit": "ns",
+            "range": "± 1096.2934754461482"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: AOF)",
+            "value": 20744.17470296224,
+            "unit": "ns",
+            "range": "± 58.0051805215157"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: AOF)",
+            "value": 37237.853064903844,
+            "unit": "ns",
+            "range": "± 90.08559529365998"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: AOF)",
+            "value": 37268.54945591518,
+            "unit": "ns",
+            "range": "± 263.8655701730582"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: AOF)",
+            "value": 26019.508143833704,
+            "unit": "ns",
+            "range": "± 185.38954176218223"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: AOF)",
+            "value": 10494.672520955404,
+            "unit": "ns",
+            "range": "± 27.768297835738753"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: AOF)",
+            "value": 22662.447684151786,
+            "unit": "ns",
+            "range": "± 133.33630865708898"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringReadCommand(Params: None)",
+            "value": 23731.1040242513,
+            "unit": "ns",
+            "range": "± 160.0468979891454"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpRawStringRmwCommand(Params: None)",
+            "value": 26504.466465541296,
+            "unit": "ns",
+            "range": "± 164.64779366508355"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjRmwCommand(Params: None)",
+            "value": 28877.58280436198,
+            "unit": "ns",
+            "range": "± 194.5445598830833"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpObjReadCommand(Params: None)",
+            "value": 28521.742248535156,
+            "unit": "ns",
+            "range": "± 130.84912508376948"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpProc(Params: None)",
+            "value": 10476.498514811197,
+            "unit": "ns",
+            "range": "± 83.50948997593103"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ModuleOperations.ModuleNoOpTxn(Params: None)",
+            "value": 22350.876426696777,
+            "unit": "ns",
+            "range": "± 426.9273040581913"
           }
         ]
       }
