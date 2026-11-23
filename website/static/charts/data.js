@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795457705119,
+  "lastUpdate": 1795457751520,
   "repoUrl": "https://github.com/microsoft/garnet",
   "entries": {
     "Benchmark": [],
@@ -737907,210 +737907,6 @@ window.BENCHMARK_DATA = {
       {
         "commit": {
           "author": {
-            "email": "matrembl@microsoft.com",
-            "name": "Mathieu Tremblay",
-            "username": "Mathos1432"
-          },
-          "committer": {
-            "email": "noreply@github.com",
-            "name": "GitHub",
-            "username": "web-flow"
-          },
-          "distinct": true,
-          "id": "a8998967c14a1e0616774904a6c86cfe0aef2876",
-          "message": "[Storage] Preserve imported ETags through migration and replay (#2278)\n\n* Preserve entity tags and expiry when importing records\n\nAdd record-copy, rename, migration and diskless snapshot regressions. Runtime validation is blocked by unavailable diskann-garnet 8.0.0; no passing test run is claimed.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Preserve imported entity tags through append-only replay\n\nLog original entity tags and absolute expiration in a distinct version-6 record upsert operation. Restore metadata during ordinary and chunked replay, and retain legacy version-4 and version-5 input layouts. Document replica-first upgrades because older readers reject version-6 headers before application and cluster gossip does not negotiate log formats.\n\nAdd import recovery, migration replica recovery, actual ordinary and chunked log boundary, truncated metadata, and legacy format regressions. Runtime tests and compilation remain blocked by unavailable diskann-garnet 8.0.0; only syntax parsing and whitespace checks passed. No observed failing/passing regression cycle is claimed.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Validate imported record inputs before replay allocation\n\nBound header and argument prefixes within the legacy input portion before unsafe decoding or argument-buffer allocation. Cover negative and oversized prefixes, valid empty and nonempty arguments, and actual ordinary/chunked replay rejection without changing the destination.\n\nCorrect test processor disposal, required log page sizes, existing ordinary SET expectations, and migration recovery assertions. Migration coverage verifies destination replica metadata before restart, then recovered primary metadata and conditional updates afterward; automatic replica stream resumption after primary restart is outside this regression.\n\nValidated 177 standalone tests, 12 migration/replica/recovery tests, and 4 diskless snapshot tests. The negative-count regression failed before the decoder correction. Temporary regression-control runs restoring original tag-dropping sizing failed 12 cases, and omitting logged tags failed 32 recovery cases. All controls were removed before final validation. Exact diskann-garnet 8.0.0 was downloaded through the alternate NuGet endpoint; dependencies and repository feeds are unchanged.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Bound imported record decoding during replica transaction classification\n\nUse the checked record-input decoder with the actual ordinary-entry or assembled chunk input length before classifying vector renames. Preserve existing legacy operation decoding and valid record layouts.\n\nExercise actual two-log replica transaction buffering, classification, and commit boundaries using ordinary and serialized chunked imports. Reject negative and oversized header, count, and argument lengths during classification with the destination unchanged. The negative-count cases failed before correction because rejection happened only during operation dispatch. All 189 selected import, replay, format, legacy-version, entity-tag, and rename tests pass. Repository whitespace checks pass.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Storage] Preserve imported metadata with version-five log entries\n\nEncode imported replacements with existing delete and SETIFGREATER or SET entries. Reuse enclosing transactions and retain exact tags and absolute expiration. Remove the version-six operation and decoder, and document ordinary GET replica visibility.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Tests] Consolidate cluster entity-tag coverage and support documentation\n\nInclude the reviewed cluster routing, replica, concurrency, failover, and expiration cases with the import preservation fix. Document cluster support, ordinary GET replica visibility, and recreation semantics.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Tests] Fix cluster formatting and trace import recovery ordering\n\nUse collection expressions required by the CI formatter. Preserve the checkpoint race workload and assertions while recording committed operation versions, session identifiers, commands, and recovered store version to diagnose the hosted Windows mismatch.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Storage] Continue single-log recovery after truncated transactions\n\nSkip sequence-manager updates in single-log replay when checkpoint truncation leaves an unmatched commit or abort. Add deterministic restart regressions for both markers and physical-log configurations, surface recovery errors in import tests, and remove temporary diagnostics. Document the downlevel checkpoint-tail recovery limitation.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Docs] Remove redundant entity-tag cluster support section\n\nKeep command and recreation semantics without a separate cluster support section. Retain upgrade and recovery constraints in the append-only record layout documentation.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Remove obsolete import compatibility scaffolding\n\nRestore the unchanged downlevel recovery test, remove unused import-test setup and diagnostics, and keep the record-layout documentation focused on imported encoding and recovery limits.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Clarify imported input documentation and entity-tag warning\n\nDocument the imported input fields and their serialization, restore the requested non-ETag warning wording, and remove the added recreation section.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Allocate import transaction vector only for selected sublog\n\nExercise the last physical sublog explicitly in import replay tests while preserving transaction and metadata assertions.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Pass source records to final upsert logging callbacks\n\nRead imported metadata directly from the source record at the final callback. Preserve legacy value callbacks through default forwarding and remove redundant input metadata capture and restoration.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* utilize an internal SET variant to stream etag to replica instead of transaction DEL/SETIFGREATER\n\n* fix CI vector test failures due to missing namespace check\n\n---------\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCo-authored-by: Vasileios Zois <vazois@microsoft.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c",
-          "timestamp": "2026-11-03T09:49:56-05:00",
-          "tree_id": "0508cf08cec0b8ae6497daf8b742e6ebc5828d56",
-          "url": "https://github.com/microsoft/garnet/commit/a8998967c14a1e0616774904a6c86cfe0aef2876"
-        },
-        "date": 1793717676068,
-        "tool": "benchmarkdotnet",
-        "benches": [
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,Limit)",
-            "value": 1491.2087912087911,
-            "unit": "ns",
-            "range": "± 448.36700038357765"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,Limit)",
-            "value": 1178.75,
-            "unit": "ns",
-            "range": "± 164.35046683647445"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,Limit)",
-            "value": 1814.1176470588234,
-            "unit": "ns",
-            "range": "± 242.58181789934326"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,Limit)",
-            "value": 235835.7142857143,
-            "unit": "ns",
-            "range": "± 1735.4259698135488"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,Limit)",
-            "value": 1937.142857142857,
-            "unit": "ns",
-            "range": "± 73.10634592924234"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,Limit)",
-            "value": 5913.04347826087,
-            "unit": "ns",
-            "range": "± 775.3364943091154"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,None)",
-            "value": 1346.5753424657535,
-            "unit": "ns",
-            "range": "± 81.78934965443231"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,None)",
-            "value": 1229.5081967213114,
-            "unit": "ns",
-            "range": "± 64.14634906493632"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,None)",
-            "value": 1803.8461538461538,
-            "unit": "ns",
-            "range": "± 81.55724192496479"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,None)",
-            "value": 247938.46153846153,
-            "unit": "ns",
-            "range": "± 2361.686707115087"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,None)",
-            "value": 2115.909090909091,
-            "unit": "ns",
-            "range": "± 393.0097140258803"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,None)",
-            "value": 6578.723404255319,
-            "unit": "ns",
-            "range": "± 941.501013930042"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Native,None)",
-            "value": 1687.7777777777778,
-            "unit": "ns",
-            "range": "± 341.12430690153286"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Native,None)",
-            "value": 1447.7777777777778,
-            "unit": "ns",
-            "range": "± 284.91188378706875"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Native,None)",
-            "value": 2042.857142857143,
-            "unit": "ns",
-            "range": "± 185.67765206451327"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Native,None)",
-            "value": 209207.6923076923,
-            "unit": "ns",
-            "range": "± 3048.076316427991"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Native,None)",
-            "value": 2162.222222222222,
-            "unit": "ns",
-            "range": "± 385.57640429047007"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Native,None)",
-            "value": 6086.170212765957,
-            "unit": "ns",
-            "range": "± 1056.9382708325456"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,Limit)",
-            "value": 1298.8372093023256,
-            "unit": "ns",
-            "range": "± 121.2621720236162"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,Limit)",
-            "value": 1140.4255319148936,
-            "unit": "ns",
-            "range": "± 89.58584389920873"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,Limit)",
-            "value": 1743.8202247191011,
-            "unit": "ns",
-            "range": "± 171.8581974793697"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,Limit)",
-            "value": 259671.42857142858,
-            "unit": "ns",
-            "range": "± 7692.455105245559"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,Limit)",
-            "value": 1868.1818181818182,
-            "unit": "ns",
-            "range": "± 161.56238220508706"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,Limit)",
-            "value": 5227.272727272727,
-            "unit": "ns",
-            "range": "± 134.276963885482"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,None)",
-            "value": 1378.16091954023,
-            "unit": "ns",
-            "range": "± 179.421089318307"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,None)",
-            "value": 1073.5294117647059,
-            "unit": "ns",
-            "range": "± 156.33226125903818"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,None)",
-            "value": 1751.6129032258063,
-            "unit": "ns",
-            "range": "± 88.22834659140322"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,None)",
-            "value": 255826.4705882353,
-            "unit": "ns",
-            "range": "± 3246.6385331148094"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,None)",
-            "value": 1838.3561643835617,
-            "unit": "ns",
-            "range": "± 100.87139362450769"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,None)",
-            "value": 5845.744680851064,
-            "unit": "ns",
-            "range": "± 869.7626537717825"
-          }
-        ]
-      },
-      {
-        "commit": {
-          "author": {
             "email": "96085550+vazois@users.noreply.github.com",
             "name": "Vasileios Zois",
             "username": "vazois"
@@ -748101,6 +747897,210 @@ window.BENCHMARK_DATA = {
             "value": 5787.234042553191,
             "unit": "ns",
             "range": "± 700.1127470726335"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "badrishc@microsoft.com",
+            "name": "Badrish Chandramouli",
+            "username": "badrishc"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "390e83362e1ada15f548938d8c3ce041fe759a6f",
+          "message": "Bump Azure.Identity, Azure.Storage.Blobs, MSAL and NUnit; keep SDK on LTS (#2419)\n\nConsolidates the NuGet updates from #2416 and makes them build:\n\n- Azure.Storage.Blobs 12.27.0 -> 12.30.1, Azure.Identity 1.17.0 -> 1.21.0,\n  NUnit 4.5.1 -> 4.6.1.\n- Microsoft.Identity.Client 4.76.0 -> 4.89.0. Azure.Core 1.60.0 requires\n  >= 4.84.2, and the central transitive pin otherwise fails restore with NU1109.\n- Options: build ManagedIdentityCredential from a ManagedIdentityId; the\n  (clientId, TokenCredentialOptions) constructor is obsolete in Azure.Identity\n  1.21. Null/empty maps to SystemAssigned exactly as the old constructor did.\n- RespTests: use Action instead of TestDelegate, obsolete in NUnit 4.6.\n\nDrops the dotnet-sdk 11.0.100 bump from #2414: Garnet tracks LTS releases,\nso Dependabot now ignores dotnet-sdk major-version updates.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 5c9ec873-851f-49d6-9439-a1a75089365a",
+          "timestamp": "2026-11-23T10:12:46-08:00",
+          "tree_id": "9b724ca21d1e363f100634e13a5b026d74c30f28",
+          "url": "https://github.com/microsoft/garnet/commit/390e83362e1ada15f548938d8c3ce041fe759a6f"
+        },
+        "date": 1795457747383,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,Limit)",
+            "value": 528.5714285714286,
+            "unit": "ns",
+            "range": "± 140.0680106914053"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,Limit)",
+            "value": 355.4347826086956,
+            "unit": "ns",
+            "range": "± 115.18177743809298"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,Limit)",
+            "value": 672.0930232558139,
+            "unit": "ns",
+            "range": "± 105.88691280651055"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,Limit)",
+            "value": 127538.46153846153,
+            "unit": "ns",
+            "range": "± 1095.8546600245106"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,Limit)",
+            "value": 713.953488372093,
+            "unit": "ns",
+            "range": "± 205.89134238729184"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,Limit)",
+            "value": 2580.232558139535,
+            "unit": "ns",
+            "range": "± 263.8269341117217"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,None)",
+            "value": 659.5744680851063,
+            "unit": "ns",
+            "range": "± 282.20298838414135"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,None)",
+            "value": 365.9574468085106,
+            "unit": "ns",
+            "range": "± 146.31913235232037"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,None)",
+            "value": 961.2903225806451,
+            "unit": "ns",
+            "range": "± 272.28192632881377"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,None)",
+            "value": 133561.53846153847,
+            "unit": "ns",
+            "range": "± 3416.32280946364"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,None)",
+            "value": 772.9411764705883,
+            "unit": "ns",
+            "range": "± 133.0845017041336"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,None)",
+            "value": 2534.4827586206898,
+            "unit": "ns",
+            "range": "± 279.4627679186741"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Native,None)",
+            "value": 527.9569892473119,
+            "unit": "ns",
+            "range": "± 189.60232490195926"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Native,None)",
+            "value": 281.25,
+            "unit": "ns",
+            "range": "± 124.23449813282859"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Native,None)",
+            "value": 869.4736842105264,
+            "unit": "ns",
+            "range": "± 418.4758780029319"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Native,None)",
+            "value": 116233.33333333333,
+            "unit": "ns",
+            "range": "± 1799.663268166542"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Native,None)",
+            "value": 551.0869565217391,
+            "unit": "ns",
+            "range": "± 167.39409656335502"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Native,None)",
+            "value": 2619.767441860465,
+            "unit": "ns",
+            "range": "± 282.7677356758743"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,Limit)",
+            "value": 440.86021505376345,
+            "unit": "ns",
+            "range": "± 204.42738645968126"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,Limit)",
+            "value": 243.61702127659575,
+            "unit": "ns",
+            "range": "± 165.62589704414265"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,Limit)",
+            "value": 693.4065934065934,
+            "unit": "ns",
+            "range": "± 237.48787000705613"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,Limit)",
+            "value": 143087.2093023256,
+            "unit": "ns",
+            "range": "± 5150.636726973155"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,Limit)",
+            "value": 581.9277108433735,
+            "unit": "ns",
+            "range": "± 174.7085226349339"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,Limit)",
+            "value": 2737.2340425531916,
+            "unit": "ns",
+            "range": "± 491.42847356975045"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,None)",
+            "value": 389.4736842105263,
+            "unit": "ns",
+            "range": "± 237.21508518755192"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,None)",
+            "value": 203.44827586206895,
+            "unit": "ns",
+            "range": "± 107.23618343493234"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,None)",
+            "value": 603.5714285714286,
+            "unit": "ns",
+            "range": "± 121.68142146796572"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,None)",
+            "value": 146178.26086956522,
+            "unit": "ns",
+            "range": "± 3683.7427264004605"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,None)",
+            "value": 833.6734693877551,
+            "unit": "ns",
+            "range": "± 408.6547903051985"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,None)",
+            "value": 2539.7727272727275,
+            "unit": "ns",
+            "range": "± 182.28421204342573"
           }
         ]
       }
