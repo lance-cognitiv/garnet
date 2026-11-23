@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795467907379,
+  "lastUpdate": 1795467955332,
   "repoUrl": "https://github.com/microsoft/garnet",
   "entries": {
     "Benchmark": [],
@@ -800033,90 +800033,6 @@ window.BENCHMARK_DATA = {
       {
         "commit": {
           "author": {
-            "email": "96085550+vazois@users.noreply.github.com",
-            "name": "Vasileios Zois",
-            "username": "vazois"
-          },
-          "committer": {
-            "email": "noreply@github.com",
-            "name": "GitHub",
-            "username": "web-flow"
-          },
-          "distinct": true,
-          "id": "9403f9672505ef1976c2da3b3e5aa6bc92c07faa",
-          "message": "[Tests] Stabilize histogram allocation and TLS send-timeout regressions (#2345)\n\n* harden TLS test\n\n* harden CI historgram test",
-          "timestamp": "2026-11-03T12:09:46-08:00",
-          "tree_id": "830be69e3677a933e4813a1ecfaac9d8cc27aac3",
-          "url": "https://github.com/microsoft/garnet/commit/9403f9672505ef1976c2da3b3e5aa6bc92c07faa"
-        },
-        "date": 1793737304362,
-        "tool": "benchmarkdotnet",
-        "benches": [
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.SetNx(Params: None)",
-            "value": 326.2277309711163,
-            "unit": "ns",
-            "range": "± 1.548648112658056"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.SetXx(Params: None)",
-            "value": 324.337838490804,
-            "unit": "ns",
-            "range": "± 2.6433549855901064"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.Increment(Params: None)",
-            "value": 284.82258160909015,
-            "unit": "ns",
-            "range": "± 3.1822200989142133"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.Decrement(Params: None)",
-            "value": 281.09369618552074,
-            "unit": "ns",
-            "range": "± 3.0016238193401885"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.IncrementBy(Params: None)",
-            "value": 320.68299134572345,
-            "unit": "ns",
-            "range": "± 3.7566440983183904"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.DecrementBy(Params: None)",
-            "value": 339.50887748173307,
-            "unit": "ns",
-            "range": "± 1.6864872524388717"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.GetFound(Params: None)",
-            "value": 206.19815247399467,
-            "unit": "ns",
-            "range": "± 1.45448131727547"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.GetNotFound(Params: None)",
-            "value": 162.06152439117432,
-            "unit": "ns",
-            "range": "± 1.5822468664776512"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.Set(Params: None)",
-            "value": 194.75683248960055,
-            "unit": "ns",
-            "range": "± 0.7479326690672186"
-          },
-          {
-            "name": "BDN.benchmark.Network.RawStringOperations.SetEx(Params: None)",
-            "value": 288.30055554707843,
-            "unit": "ns",
-            "range": "± 2.3439878250506125"
-          }
-        ]
-      },
-      {
-        "commit": {
-          "author": {
             "email": "kmontrose@microsoft.com",
             "name": "kevin-montrose",
             "username": "kevin-montrose"
@@ -804227,6 +804143,90 @@ window.BENCHMARK_DATA = {
             "value": 280.17829826899936,
             "unit": "ns",
             "range": "± 1.3369608287415073"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "168653085+johnkaram02@users.noreply.github.com",
+            "name": "John Karam",
+            "username": "johnkaram02"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dabb3de1d9507257440be48d7a30b164f4623e6e",
+          "message": "Return inf and -inf for infinite scores in ZSCAN (#2308)\n\nZSCAN formatted member scores with Utf8Formatter, which writes\n\"Infinity\" and \"-Infinity\" for infinite values. Redis, and other Garnet\nsorted set replies such as ZSCORE and ZRANGE WITHSCORES, use \"inf\" and\n\"-inf\".\n\nWrite \"inf\" and \"-inf\" for infinite scores so ZSCAN replies match Redis.\n\nCo-authored-by: Badrish Chandramouli <badrishc@microsoft.com>\nCo-authored-by: Vasileios Zois <96085550+vazois@users.noreply.github.com>",
+          "timestamp": "2026-11-23T12:59:00-08:00",
+          "tree_id": "28af2bd392df1cac5f078370edf546974ad6d490",
+          "url": "https://github.com/microsoft/garnet/commit/dabb3de1d9507257440be48d7a30b164f4623e6e"
+        },
+        "date": 1795467943096,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.SetNx(Params: None)",
+            "value": 216.24600251515707,
+            "unit": "ns",
+            "range": "± 1.6626927043587219"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.SetXx(Params: None)",
+            "value": 236.44283158438546,
+            "unit": "ns",
+            "range": "± 2.079295446760089"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.Increment(Params: None)",
+            "value": 214.746200243632,
+            "unit": "ns",
+            "range": "± 1.44427068519561"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.Decrement(Params: None)",
+            "value": 209.08945287976945,
+            "unit": "ns",
+            "range": "± 1.7536212547757937"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.IncrementBy(Params: None)",
+            "value": 250.93324324663948,
+            "unit": "ns",
+            "range": "± 4.943633668389285"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.DecrementBy(Params: None)",
+            "value": 248.7601383872654,
+            "unit": "ns",
+            "range": "± 6.322234526707073"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.GetFound(Params: None)",
+            "value": 142.4291491508484,
+            "unit": "ns",
+            "range": "± 1.7872271234130157"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.GetNotFound(Params: None)",
+            "value": 106.53230410355788,
+            "unit": "ns",
+            "range": "± 1.1877859893145086"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.Set(Params: None)",
+            "value": 136.94982528686523,
+            "unit": "ns",
+            "range": "± 1.247823738043835"
+          },
+          {
+            "name": "BDN.benchmark.Network.RawStringOperations.SetEx(Params: None)",
+            "value": 203.29047533181998,
+            "unit": "ns",
+            "range": "± 1.2293945997595446"
           }
         ]
       }
