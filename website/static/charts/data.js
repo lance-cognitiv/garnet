@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795467894471,
+  "lastUpdate": 1795467907379,
   "repoUrl": "https://github.com/microsoft/garnet",
   "entries": {
     "Benchmark": [],
@@ -737907,210 +737907,6 @@ window.BENCHMARK_DATA = {
       {
         "commit": {
           "author": {
-            "email": "96085550+vazois@users.noreply.github.com",
-            "name": "Vasileios Zois",
-            "username": "vazois"
-          },
-          "committer": {
-            "email": "noreply@github.com",
-            "name": "GitHub",
-            "username": "web-flow"
-          },
-          "distinct": true,
-          "id": "3d104a76ec410499545bc7fb39d0e3168f8ee709",
-          "message": "Introduce a bounded-memory client for internal server-to-server traffic (#2205)\n\n* add exponential backoff for gossip\n\n* wip; ConfigSerializationBuffer\n\n* Add global constructor signal for out-of-line payload processing; build skeleton for chunked internal execute API\n\n* implement payload buffer management API\n\n* implement async flush payload\n\n* wire up chunked send to gossip client\n\n* add tests for chunked mode and reduce buffer size.\n\n* fix race condition bugs introduced/exposes by chunked send\n\n* refresh credential by leveraging exponential backoff\n\n* remove config serializer\n\n* use LFBP for payload allocation\n\n* reduce sendPageSize for gossip\n\n* eliminate concurrent dictionary and use flat array to ship packages\n\n* nit; comment\n\n* prototype light GC solution\n\n* gracefully failure handling on request register after completion register\n\n* cleanup an rename; add CompletionLane with padding\n\n* formatting, cleanup and renaming\n\n* re-order and consolidate\n\n* add GarnetLightClientTests\n\n* introduce descriptor types for inline request registration support\n\n* first iteration of inline/out-of-online combination support\n\n* break early on dispose and ensure CompletionOnFault is called with inline enqueue\n\n* consolidate inline/out-of-line request enqueue\n\n* wip; testing GarnetLightClient infrastructure\n\n* stress test completion track through direct GarnetLightClient use\n\n* add inline support for no-response\n\n* add more tests for inline no-response\n\n* add memory budget restrictions for out-of-line client requests\n\n* revert memory backpressure; working on memory quota abstraction\n\n* renaming\n\n* separate RingBoundedBuffer management from application using it\n\n* simplify LightBoundedFifoQueue by moving application specific functionality to caller\n\n* improve memory tracker testing and utilize ActiveWorkerMonitor\n\n* parameterize WaiterQueue with custom Tracker and Request objects\n\n* rename context\n\n* push down specialization\n\n* wip; move and rename and restructure\n\n* simplify LightNetworkWriter API\n\n* consolidate RingBoundBuffer functionality\n\n* descriptive renaming\n\n* consolidate Page address calculations\n\n* add PageShape\n\n* add async delayed completion test\n\n* wip; benchmarking\n\n* add memory tracking defaults and allocation improvements for FlushContext\n\n* rename and update location of memory throttle primitives\n\n* add BDN analysis and default for LightNetworkWriter Layer\n\n* MemoryThrottle integration\n\n* add collection BDN\n\n* wire up GarnetLightClient\n\n* add pubsub large than aof payload fix\n\n* ensure cluster publish initialization is best-effort\n\n* supress response for internal pubsub commands\n\n* revert changes from GarnetClient\n\n* address fairness when entering under contention\n\n* add more testing related to reconnect stability\n\n* memory footprint calculations\n\n* enforce inline or re-use AsyncResult allocation\n\n* added parameterization functionality for maxOutstanding requests\n\n* fix tls issue and avoid locking the whole flush range logic\n\n* consolidate CountWrapper in admission controller\n\n* fix reference issue\n\n* simplify credential rotation\n\n* add graceful shutdown hooks\n\n* isolate exclusive access to gc instance through GarnetServerNode ref CAS\n\n* wip; updating runtime config for gossip client\n\n* wip; graceful retirement API for GarnetLightClient in GarnetServerNode\n\n* wip; add atomic swap of clients on trigger of gossip networkwriteroptions update. Include grace period parameter\n\n* wip; added snapshot semantics for ConfigGroup and support for capturing network options change on new GarnetServerNode additions\n\n* gather send batch for inline payloads\n\n* update Client.benchmark\n\n* fix hang issue and make default Client.benchmark larger queue size to match GC perf\n\n* simplify ringbounded buffer; add descriptive exceptions\n\n* wip;\n\n* re-architecture DuplexOperationChannel to enforce inline send coalescing\n\n* add support for TLS at Client.benchmark\n\n* stress TLS end to end\n\n* optimistically skip Set of CompletionEvent if no waiters are detected\n\n* lazily allocate memoryThrottle\n\n* wider testing for garnetlightclient tls\n\n* additional tls tests\n\n* fix TLS hang when reply fits exactly in the frame buffer, stalling waiting for another read that never comes.\n\n* fix sfi issue related to validating array responses and depth limits\n\n* safe parse for tests\n\n* augment client.benchmark\n\n* ensure array size is validated\n\n* harden buffer retention test\n\n* codeQL fix\n\n* reduce allocations and GC run\n\n* harden test\n\n* review and cleanup DuplexAdmissionController\n\n* cleanup DuplexOperationChannel\n\n* rename cleanup\n\n* more cleanup and renaming\n\n* Share LightEpoch between Tsavorite and Garnet.client; fence Release with Interlocked.Exchange\n\nGarnet.client now compiles Tsavorite's LightEpoch.cs and LightEpoch.EntryTable.cs as linked\nsources under its own namespace (GARNET_CLIENT_EPOCH), replacing its older private copy.\nRelease clears localCurrentEpoch with Interlocked.Exchange instead of Volatile.Write.\n\nTLA+ (x86-TSO and ARM64 store models) findings, by operation ordering:\n\nFinding 1: write localCurrentEpoch=0, read drainCount (Suspend)\n  A (Suspend): 1. lce[A] = 0   2. read drainCount\n  B (Bump):    1. Interlocked.Increment(drainCount)   2. scan lce[A]\n  Bad outcome: A reads drainCount=0, B reads lce[A]!=0 -> drain action stranded.\n  Store->load reordering in A; allowed on x86 and ARM64.\n  Fix: Interlocked.Exchange on A1 is a full fence, so A2 cannot complete before the clear is visible.\n\nFinding 2: write localCurrentEpoch=0, read waiterCount (Release, full table)\n  A (Release):          1. threadId[s] = 0   2. lce[s] = 0   3. read waiterCount\n  B (ReserveEntryWait): 1. Interlocked.Increment(waiterCount)   2. re-probe lce[s]   3. wait\n  Bad outcome: A reads waiterCount=0, B reads lce[s]!=0 -> no signal, B blocks.\n  Store->load reordering in A; allowed on x86 and ARM64.\n  Fix: Interlocked.Exchange on A2 fences it before A3; a Suspend barrier would come too late.\n\nFinding 3: write threadId=0, write localCurrentEpoch=0 (Release, plain stores)\n  A (Release): 1. threadId[s] = 0   2. lce[s] = 0\n  C (claim):   1. CAS lce[s] 0->epoch   2. threadId[s] = C\n  Bad outcome: A1 lands after C2 -> C's threadId wiped.\n  Store->store reordering in A; ARM64 only.\n  Fix: Interlocked.Exchange on A2 keeps A1 ahead of it, as the release store did.\n\nFindings 1 and 2 are the same store->load pattern (slot clear, then counter read).\nOne full fence on the clear (Interlocked.Exchange) fixes both and also gives the\nstore ordering Finding 3 needs.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 146f7b3c-7f4e-41f9-b8c1-836075480226\n\n* augment benchmark for BDN\n\n* augmented pressure BDN for LightEpoch\n\nAdds EpochReleaseTests/EpochReleaseWorkload: concurrent Resume/Suspend\nbenchmarks with Stable, DrainPressure and WaiterPressure workloads,\noptional deterministic jitter, and 2/8 pinned persistent workers, for\nboth Tsavorite.core and Garnet.client LightEpoch. Keeps alternate-slot\nprobing in the NoInlining TryAcquireEntrySlow helper.\n\nNoInlining slow acquisition path (TryAcquireEntrySlow):\nMoving alternate-slot probing out of the AggressiveInlining TryAcquireEntry\nfast path keeps the inlined Resume/Suspend code small. With Tiered PGO on,\nthe inlined probe loop bloated the hot loop and made Release repeat the\nthread-static Metadata.Entries lookup. Disassembly of a Tsavorite\nResume/Suspend loop shows Tier1 code shrinking from 1393 to 855 bytes and\nthe lookups dropping from 3 to 2 per pair. PGO-off code already\ndid 2 lookups and is unchanged.\n\nSetup: 1 thread pinned to CPU 0, Windows, AMD Ryzen 7 PRO 7840U, .NET 10,\nBDN 0.15.8, ReadyToRun off, 100,000 ops per invocation. Baseline 63ff9a950\nvs baseline + NoInlining helper; ABBA order, 2 launches per revision.\nResumeSuspend is one Resume + Suspend pair; ProtectAndDrain is a control.\n\n| Library   | Method          | PGO | Before ns/op | After ns/op | Change |\n|-----------|-----------------|-----|--------------|-------------|--------|\n| Client    | ResumeSuspend   | on  | 6.568        | 3.665       | -44.2% |\n| Client    | ResumeSuspend   | off | 5.418        | 5.410       | -0.2%  |\n| Client    | ProtectAndDrain | on  | 0.838        | 0.833       | -0.5%  |\n| Client    | ProtectAndDrain | off | 0.988        | 1.021       | +3.3%  |\n| Tsavorite | ResumeSuspend   | on  | 6.327        | 3.704       | -41.5% |\n| Tsavorite | ResumeSuspend   | off | 5.326        | 5.427       | +1.9%  |\n| Tsavorite | ProtectAndDrain | on  | 0.836        | 0.839       | +0.4%  |\n| Tsavorite | ProtectAndDrain | off | 1.197        | 1.171       | -2.2%  |\n\nThis is an uncontended single-thread micro-benchmark on a different host\nfrom the evaluation below; the gain in real call sites is expected to be\nsmaller.\n\nEvaluation (https://gist.github.com/vazois/ccacfe7b694d20ed19eff49624106c69)\ncompares production Release (Interlocked.Exchange) against:\n- Fence: Volatile.Write + Thread.MemoryBarrier before waiter/drain checks.\n- Volatile-only: Volatile.Write alone; intentionally unsafe diagnostic.\n\nSetup: Windows Server 2022, 2x AMD EPYC 7413 (96 logical), .NET 10.0.13,\nBDN 0.15.8, Tiered PGO on, concurrent workstation GC. Two independent\n240-case campaigns (480 cases) with fresh Exchange controls each; not a\nsingle three-way trial. Same-NUMA: ABBAABBA, 4 launch pairs per row.\nCross-NUMA: ABBA, 2 exploratory pairs. 65,536 worker pairs per invocation.\nValues are aggregate elapsed ns per worker Resume/Suspend pair (includes\nacquire, jitter and coordination), not isolated Release latency.\nJitter=8 is a 0..8 SpinWait iteration bound, not 8 ns.\n\nFindings:\n- Stable: release choice is mostly within noise; Volatile-only primary\n  95% CIs include zero (no-jitter).\n- WaiterPressure: Exchange can cost more. 2 workers vs Volatile-only:\n  +1.7-1.8 ns (+8%), CIs exclude zero. 8 workers vs Fence, no jitter:\n  core +1.20 ns (+12.5%), client +1.44 ns (+15.0%).\n- DrainPressure: mostly broad intervals.\n- x64 codegen: Fence = mov + lock or [rsp],0; Exchange = xchg;\n  Volatile-only = mov with no full fence.\n- No hang observed does not make Volatile-only safe; it lacks store->load\n  ordering before waiter/drain checks. Production Release stays Exchange.\n\nSame NUMA (old -> Exchange ns/op; positive change = Exchange slower):\n\n| Library   | W | Workload       | J | Fence -> Exchange ns/op | Change  | Volatile -> Exchange ns/op | Change  |\n|-----------|---|----------------|---|-------------------------|---------|----------------------------|---------|\n| Client    | 2 | Stable         | 0 | 9.662 -> 9.334          | -3.39%  | 9.763 -> 9.544             | -2.24%  |\n| Client    | 2 | Stable         | 8 | 153.876 -> 154.038      | +0.11%  | 153.816 -> 154.234         | +0.27%  |\n| Client    | 8 | Stable         | 0 | 4.056 -> 4.410          | +8.73%  | 4.163 -> 4.294             | +3.14%  |\n| Client    | 8 | Stable         | 8 | 40.483 -> 40.525        | +0.10%  | 40.503 -> 40.290           | -0.52%  |\n| Tsavorite | 2 | Stable         | 0 | 9.726 -> 9.711          | -0.15%  | 9.665 -> 9.596             | -0.72%  |\n| Tsavorite | 2 | Stable         | 8 | 154.082 -> 153.983      | -0.06%  | 154.362 -> 154.028         | -0.22%  |\n| Tsavorite | 8 | Stable         | 0 | 4.382 -> 4.121          | -5.95%  | 4.285 -> 4.265             | -0.46%  |\n| Tsavorite | 8 | Stable         | 8 | 40.609 -> 40.469        | -0.35%  | 40.421 -> 40.273           | -0.37%  |\n| Client    | 2 | DrainPressure  | 0 | 87.102 -> 91.317        | +4.84%  | 77.913 -> 90.928           | +16.71% |\n| Client    | 2 | DrainPressure  | 8 | 217.893 -> 220.280      | +1.10%  | 217.688 -> 220.348         | +1.22%  |\n| Client    | 8 | DrainPressure  | 0 | 108.096 -> 113.280      | +4.80%  | 97.020 -> 99.626           | +2.69%  |\n| Client    | 8 | DrainPressure  | 8 | 144.884 -> 147.315      | +1.68%  | 147.811 -> 133.680         | -9.56%  |\n| Tsavorite | 2 | DrainPressure  | 0 | 87.254 -> 90.503        | +3.72%  | 82.127 -> 89.307           | +8.74%  |\n| Tsavorite | 2 | DrainPressure  | 8 | 218.370 -> 210.695      | -3.51%  | 216.807 -> 220.747         | +1.82%  |\n| Tsavorite | 8 | DrainPressure  | 0 | 106.091 -> 115.784      | +9.14%  | 107.542 -> 112.478         | +4.59%  |\n| Tsavorite | 8 | DrainPressure  | 8 | 125.099 -> 128.352      | +2.60%  | 138.624 -> 146.569         | +5.73%  |\n| Client    | 2 | WaiterPressure | 0 | 23.301 -> 22.910        | -1.68%  | 21.024 -> 22.830           | +8.59%  |\n| Client    | 2 | WaiterPressure | 8 | 288.780 -> 258.131      | -10.61% | 289.332 -> 290.059         | +0.25%  |\n| Client    | 8 | WaiterPressure | 0 | 9.567 -> 11.002         | +15.00% | 10.369 -> 11.059           | +6.66%  |\n| Client    | 8 | WaiterPressure | 8 | 89.926 -> 97.542        | +8.47%  | 91.300 -> 95.154           | +4.22%  |\n| Tsavorite | 2 | WaiterPressure | 0 | 23.254 -> 22.112        | -4.91%  | 21.136 -> 22.852           | +8.12%  |\n| Tsavorite | 2 | WaiterPressure | 8 | 289.712 -> 289.636      | -0.03%  | 289.928 -> 289.765         | -0.06%  |\n| Tsavorite | 8 | WaiterPressure | 0 | 9.580 -> 10.777         | +12.50% | 10.745 -> 10.859           | +1.06%  |\n| Tsavorite | 8 | WaiterPressure | 8 | 90.806 -> 92.247        | +1.59%  | 91.200 -> 89.414           | -1.96%  |\n\nCross NUMA, 8 workers (old -> Exchange ns/op; exploratory, 2 launch pairs):\n\n| Library   | Workload       | J | Fence -> Exchange ns/op | Change  | Volatile -> Exchange ns/op | Change |\n|-----------|----------------|---|-------------------------|---------|----------------------------|--------|\n| Client    | Stable         | 0 | 4.782 -> 4.742          | -0.84%  | 4.796 -> 4.672             | -2.59% |\n| Client    | Stable         | 8 | 40.740 -> 40.873        | +0.33%  | 40.729 -> 40.805           | +0.19% |\n| Tsavorite | Stable         | 0 | 4.872 -> 4.731          | -2.89%  | 4.693 -> 4.763             | +1.50% |\n| Tsavorite | Stable         | 8 | 40.784 -> 40.760        | -0.06%  | 40.844 -> 40.811           | -0.08% |\n| Client    | DrainPressure  | 0 | 139.883 -> 141.007      | +0.80%  | 142.034 -> 140.675         | -0.96% |\n| Client    | DrainPressure  | 8 | 183.071 -> 183.941      | +0.47%  | 166.195 -> 179.723         | +8.14% |\n| Tsavorite | DrainPressure  | 0 | 141.546 -> 137.329      | -2.98%  | 144.653 -> 147.746         | +2.14% |\n| Tsavorite | DrainPressure  | 8 | 189.989 -> 182.497      | -3.94%  | 189.772 -> 192.639         | +1.51% |\n| Client    | WaiterPressure | 0 | 10.986 -> 12.317        | +12.11% | 11.749 -> 12.035           | +2.44% |\n| Client    | WaiterPressure | 8 | 107.952 -> 116.046      | +7.50%  | 106.813 -> 115.278         | +7.93% |\n| Tsavorite | WaiterPressure | 0 | 10.554 -> 12.173        | +15.35% | 12.020 -> 11.992           | -0.23% |\n| Tsavorite | WaiterPressure | 8 | 107.151 -> 115.763      | +8.04%  | 107.162 -> 115.415         | +7.70% |\n\nThe gist has the raw measurements and a 95% confidence interval for each\nrow's ns/op difference. Results cover x64 epoch micro-benchmarks only;\nARM64, CPU hardware counters and end-to-end Garnet throughput were not\nmeasured.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 146f7b3c-7f4e-41f9-b8c1-836075480226\n\n* remove GarnetClient and replace it with GarnetLightClient\n\n* harden re-connect guarantees\n\n* add fix CI ScheduledCheckpointFollowsPrimaryAndReplicates\n\n* remove litmus\n\n* improve safe testing using cts; cap bit max for maxOustandingRequests\n\n* serialize CONFIG SET to ensure grouped SETS are atomic\n\n* ensure connection swap is registered with TaskManager\n\n---------\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 146f7b3c-7f4e-41f9-b8c1-836075480226",
-          "timestamp": "2026-11-03T10:56:34-08:00",
-          "tree_id": "1324780628b21ddf8bf75e7d53f25237d3703811",
-          "url": "https://github.com/microsoft/garnet/commit/3d104a76ec410499545bc7fb39d0e3168f8ee709"
-        },
-        "date": 1793733096972,
-        "tool": "benchmarkdotnet",
-        "benches": [
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,Limit)",
-            "value": 1485.8695652173913,
-            "unit": "ns",
-            "range": "± 304.0320694981458"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,Limit)",
-            "value": 1230.3370786516855,
-            "unit": "ns",
-            "range": "± 151.8106583738909"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,Limit)",
-            "value": 1762.2641509433963,
-            "unit": "ns",
-            "range": "± 81.39744631776661"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,Limit)",
-            "value": 237981.25,
-            "unit": "ns",
-            "range": "± 1472.5120259837156"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,Limit)",
-            "value": 2036.842105263158,
-            "unit": "ns",
-            "range": "± 49.55946277833521"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,Limit)",
-            "value": 5205.882352941177,
-            "unit": "ns",
-            "range": "± 108.80365478290537"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,None)",
-            "value": 1275.9493670886077,
-            "unit": "ns",
-            "range": "± 110.02935490996019"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,None)",
-            "value": 1258.8235294117646,
-            "unit": "ns",
-            "range": "± 87.68737440619435"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,None)",
-            "value": 1865.625,
-            "unit": "ns",
-            "range": "± 54.532470350981214"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,None)",
-            "value": 255069.23076923078,
-            "unit": "ns",
-            "range": "± 8412.933459424992"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,None)",
-            "value": 1872,
-            "unit": "ns",
-            "range": "± 54.1602560309064"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,None)",
-            "value": 5106.666666666667,
-            "unit": "ns",
-            "range": "± 70.37315505489968"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Native,None)",
-            "value": 1145.4545454545455,
-            "unit": "ns",
-            "range": "± 158.2294935300607"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Native,None)",
-            "value": 1038.2022471910113,
-            "unit": "ns",
-            "range": "± 99.43661523522512"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Native,None)",
-            "value": 1766.6666666666667,
-            "unit": "ns",
-            "range": "± 139.21933224918914"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Native,None)",
-            "value": 211742.42424242425,
-            "unit": "ns",
-            "range": "± 6504.278894650347"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Native,None)",
-            "value": 1944.2857142857142,
-            "unit": "ns",
-            "range": "± 103.04876330673558"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Native,None)",
-            "value": 5196.2962962962965,
-            "unit": "ns",
-            "range": "± 109.12759462588694"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,Limit)",
-            "value": 1396.629213483146,
-            "unit": "ns",
-            "range": "± 125.63424385008817"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,Limit)",
-            "value": 1194.3181818181818,
-            "unit": "ns",
-            "range": "± 125.35737836003072"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,Limit)",
-            "value": 1781.6326530612246,
-            "unit": "ns",
-            "range": "± 78.19172320796677"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,Limit)",
-            "value": 254526.66666666666,
-            "unit": "ns",
-            "range": "± 2961.5311355220742"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,Limit)",
-            "value": 1915.7894736842106,
-            "unit": "ns",
-            "range": "± 74.53029780973235"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,Limit)",
-            "value": 5148,
-            "unit": "ns",
-            "range": "± 96.26352718795768"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,None)",
-            "value": 1477.5280898876404,
-            "unit": "ns",
-            "range": "± 113.57097199225055"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,None)",
-            "value": 1013.5802469135803,
-            "unit": "ns",
-            "range": "± 77.06018170844314"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,None)",
-            "value": 1642.3076923076924,
-            "unit": "ns",
-            "range": "± 27.735009811261445"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,None)",
-            "value": 253128.57142857142,
-            "unit": "ns",
-            "range": "± 2974.6178995547725"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,None)",
-            "value": 1896.1538461538462,
-            "unit": "ns",
-            "range": "± 84.42672638372355"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,None)",
-            "value": 5208.333333333333,
-            "unit": "ns",
-            "range": "± 79.2961461098759"
-          }
-        ]
-      },
-      {
-        "commit": {
-          "author": {
             "email": "kmontrose@microsoft.com",
             "name": "kevin-montrose",
             "username": "kevin-montrose"
@@ -748101,6 +747897,210 @@ window.BENCHMARK_DATA = {
             "value": 2539.7727272727275,
             "unit": "ns",
             "range": "± 182.28421204342573"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "168653085+johnkaram02@users.noreply.github.com",
+            "name": "John Karam",
+            "username": "johnkaram02"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dabb3de1d9507257440be48d7a30b164f4623e6e",
+          "message": "Return inf and -inf for infinite scores in ZSCAN (#2308)\n\nZSCAN formatted member scores with Utf8Formatter, which writes\n\"Infinity\" and \"-Infinity\" for infinite values. Redis, and other Garnet\nsorted set replies such as ZSCORE and ZRANGE WITHSCORES, use \"inf\" and\n\"-inf\".\n\nWrite \"inf\" and \"-inf\" for infinite scores so ZSCAN replies match Redis.\n\nCo-authored-by: Badrish Chandramouli <badrishc@microsoft.com>\nCo-authored-by: Vasileios Zois <96085550+vazois@users.noreply.github.com>",
+          "timestamp": "2026-11-23T12:59:00-08:00",
+          "tree_id": "28af2bd392df1cac5f078370edf546974ad6d490",
+          "url": "https://github.com/microsoft/garnet/commit/dabb3de1d9507257440be48d7a30b164f4623e6e"
+        },
+        "date": 1795467798698,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,Limit)",
+            "value": 1323.2558139534883,
+            "unit": "ns",
+            "range": "± 185.77305484643546"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,Limit)",
+            "value": 1220,
+            "unit": "ns",
+            "range": "± 207.2831207185753"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,Limit)",
+            "value": 1917.391304347826,
+            "unit": "ns",
+            "range": "± 401.67470728564086"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,Limit)",
+            "value": 210257.57575757575,
+            "unit": "ns",
+            "range": "± 31624.038554100633"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,Limit)",
+            "value": 2005.4054054054054,
+            "unit": "ns",
+            "range": "± 74.33387871977033"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,Limit)",
+            "value": 5887.878787878788,
+            "unit": "ns",
+            "range": "± 623.2359148555727"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Managed,None)",
+            "value": 1372.2222222222222,
+            "unit": "ns",
+            "range": "± 68.45096486679326"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Managed,None)",
+            "value": 1218.888888888889,
+            "unit": "ns",
+            "range": "± 160.6828437626445"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Managed,None)",
+            "value": 1686.6666666666667,
+            "unit": "ns",
+            "range": "± 35.18657752744985"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Managed,None)",
+            "value": 231221.42857142858,
+            "unit": "ns",
+            "range": "± 1476.054288885156"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Managed,None)",
+            "value": 1886.842105263158,
+            "unit": "ns",
+            "range": "± 74.14759798766224"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Managed,None)",
+            "value": 5211.111111111111,
+            "unit": "ns",
+            "range": "± 113.18329168362206"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Native,None)",
+            "value": 1328.0701754385964,
+            "unit": "ns",
+            "range": "± 70.08766440504623"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Native,None)",
+            "value": 1271.111111111111,
+            "unit": "ns",
+            "range": "± 212.12909173554985"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Native,None)",
+            "value": 1729.2682926829268,
+            "unit": "ns",
+            "range": "± 71.5678085420547"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Native,None)",
+            "value": 197007.6923076923,
+            "unit": "ns",
+            "range": "± 1190.5611691281963"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Native,None)",
+            "value": 1945.7142857142858,
+            "unit": "ns",
+            "range": "± 70.05400077947074"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Native,None)",
+            "value": 4922.222222222223,
+            "unit": "ns",
+            "range": "± 94.28090415820634"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,Limit)",
+            "value": 1440.625,
+            "unit": "ns",
+            "range": "± 49.899091723584604"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,Limit)",
+            "value": 1221.4285714285713,
+            "unit": "ns",
+            "range": "± 57.73502691896256"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,Limit)",
+            "value": 1794.1176470588234,
+            "unit": "ns",
+            "range": "± 190.45868266876562"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,Limit)",
+            "value": 247176.92307692306,
+            "unit": "ns",
+            "range": "± 3917.727624987442"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,Limit)",
+            "value": 1869.7674418604652,
+            "unit": "ns",
+            "range": "± 80.28189537032928"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,Limit)",
+            "value": 5028.571428571428,
+            "unit": "ns",
+            "range": "± 72.6273039202563"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupHit(Params: Tracked,None)",
+            "value": 1464.7368421052631,
+            "unit": "ns",
+            "range": "± 222.63815746662644"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LookupMiss(Params: Tracked,None)",
+            "value": 1086.9565217391305,
+            "unit": "ns",
+            "range": "± 34.43502215750909"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadOuterHit(Params: Tracked,None)",
+            "value": 1848.6486486486488,
+            "unit": "ns",
+            "range": "± 69.20830723106722"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadInnerHit(Params: Tracked,None)",
+            "value": 243187.5,
+            "unit": "ns",
+            "range": "± 5866.953323859653"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.LoadMiss(Params: Tracked,None)",
+            "value": 1980.6451612903227,
+            "unit": "ns",
+            "range": "± 65.41842165990494"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaScriptCacheOperations.Digest(Params: Tracked,None)",
+            "value": 5220,
+            "unit": "ns",
+            "range": "± 160.60231457944764"
           }
         ]
       }
