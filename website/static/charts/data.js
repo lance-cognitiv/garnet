@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795458709486,
+  "lastUpdate": 1795458785736,
   "repoUrl": "https://github.com/microsoft/garnet",
   "entries": {
     "Benchmark": [],
@@ -910165,270 +910165,6 @@ window.BENCHMARK_DATA = {
             "username": "web-flow"
           },
           "distinct": true,
-          "id": "3d104a76ec410499545bc7fb39d0e3168f8ee709",
-          "message": "Introduce a bounded-memory client for internal server-to-server traffic (#2205)\n\n* add exponential backoff for gossip\n\n* wip; ConfigSerializationBuffer\n\n* Add global constructor signal for out-of-line payload processing; build skeleton for chunked internal execute API\n\n* implement payload buffer management API\n\n* implement async flush payload\n\n* wire up chunked send to gossip client\n\n* add tests for chunked mode and reduce buffer size.\n\n* fix race condition bugs introduced/exposes by chunked send\n\n* refresh credential by leveraging exponential backoff\n\n* remove config serializer\n\n* use LFBP for payload allocation\n\n* reduce sendPageSize for gossip\n\n* eliminate concurrent dictionary and use flat array to ship packages\n\n* nit; comment\n\n* prototype light GC solution\n\n* gracefully failure handling on request register after completion register\n\n* cleanup an rename; add CompletionLane with padding\n\n* formatting, cleanup and renaming\n\n* re-order and consolidate\n\n* add GarnetLightClientTests\n\n* introduce descriptor types for inline request registration support\n\n* first iteration of inline/out-of-online combination support\n\n* break early on dispose and ensure CompletionOnFault is called with inline enqueue\n\n* consolidate inline/out-of-line request enqueue\n\n* wip; testing GarnetLightClient infrastructure\n\n* stress test completion track through direct GarnetLightClient use\n\n* add inline support for no-response\n\n* add more tests for inline no-response\n\n* add memory budget restrictions for out-of-line client requests\n\n* revert memory backpressure; working on memory quota abstraction\n\n* renaming\n\n* separate RingBoundedBuffer management from application using it\n\n* simplify LightBoundedFifoQueue by moving application specific functionality to caller\n\n* improve memory tracker testing and utilize ActiveWorkerMonitor\n\n* parameterize WaiterQueue with custom Tracker and Request objects\n\n* rename context\n\n* push down specialization\n\n* wip; move and rename and restructure\n\n* simplify LightNetworkWriter API\n\n* consolidate RingBoundBuffer functionality\n\n* descriptive renaming\n\n* consolidate Page address calculations\n\n* add PageShape\n\n* add async delayed completion test\n\n* wip; benchmarking\n\n* add memory tracking defaults and allocation improvements for FlushContext\n\n* rename and update location of memory throttle primitives\n\n* add BDN analysis and default for LightNetworkWriter Layer\n\n* MemoryThrottle integration\n\n* add collection BDN\n\n* wire up GarnetLightClient\n\n* add pubsub large than aof payload fix\n\n* ensure cluster publish initialization is best-effort\n\n* supress response for internal pubsub commands\n\n* revert changes from GarnetClient\n\n* address fairness when entering under contention\n\n* add more testing related to reconnect stability\n\n* memory footprint calculations\n\n* enforce inline or re-use AsyncResult allocation\n\n* added parameterization functionality for maxOutstanding requests\n\n* fix tls issue and avoid locking the whole flush range logic\n\n* consolidate CountWrapper in admission controller\n\n* fix reference issue\n\n* simplify credential rotation\n\n* add graceful shutdown hooks\n\n* isolate exclusive access to gc instance through GarnetServerNode ref CAS\n\n* wip; updating runtime config for gossip client\n\n* wip; graceful retirement API for GarnetLightClient in GarnetServerNode\n\n* wip; add atomic swap of clients on trigger of gossip networkwriteroptions update. Include grace period parameter\n\n* wip; added snapshot semantics for ConfigGroup and support for capturing network options change on new GarnetServerNode additions\n\n* gather send batch for inline payloads\n\n* update Client.benchmark\n\n* fix hang issue and make default Client.benchmark larger queue size to match GC perf\n\n* simplify ringbounded buffer; add descriptive exceptions\n\n* wip;\n\n* re-architecture DuplexOperationChannel to enforce inline send coalescing\n\n* add support for TLS at Client.benchmark\n\n* stress TLS end to end\n\n* optimistically skip Set of CompletionEvent if no waiters are detected\n\n* lazily allocate memoryThrottle\n\n* wider testing for garnetlightclient tls\n\n* additional tls tests\n\n* fix TLS hang when reply fits exactly in the frame buffer, stalling waiting for another read that never comes.\n\n* fix sfi issue related to validating array responses and depth limits\n\n* safe parse for tests\n\n* augment client.benchmark\n\n* ensure array size is validated\n\n* harden buffer retention test\n\n* codeQL fix\n\n* reduce allocations and GC run\n\n* harden test\n\n* review and cleanup DuplexAdmissionController\n\n* cleanup DuplexOperationChannel\n\n* rename cleanup\n\n* more cleanup and renaming\n\n* Share LightEpoch between Tsavorite and Garnet.client; fence Release with Interlocked.Exchange\n\nGarnet.client now compiles Tsavorite's LightEpoch.cs and LightEpoch.EntryTable.cs as linked\nsources under its own namespace (GARNET_CLIENT_EPOCH), replacing its older private copy.\nRelease clears localCurrentEpoch with Interlocked.Exchange instead of Volatile.Write.\n\nTLA+ (x86-TSO and ARM64 store models) findings, by operation ordering:\n\nFinding 1: write localCurrentEpoch=0, read drainCount (Suspend)\n  A (Suspend): 1. lce[A] = 0   2. read drainCount\n  B (Bump):    1. Interlocked.Increment(drainCount)   2. scan lce[A]\n  Bad outcome: A reads drainCount=0, B reads lce[A]!=0 -> drain action stranded.\n  Store->load reordering in A; allowed on x86 and ARM64.\n  Fix: Interlocked.Exchange on A1 is a full fence, so A2 cannot complete before the clear is visible.\n\nFinding 2: write localCurrentEpoch=0, read waiterCount (Release, full table)\n  A (Release):          1. threadId[s] = 0   2. lce[s] = 0   3. read waiterCount\n  B (ReserveEntryWait): 1. Interlocked.Increment(waiterCount)   2. re-probe lce[s]   3. wait\n  Bad outcome: A reads waiterCount=0, B reads lce[s]!=0 -> no signal, B blocks.\n  Store->load reordering in A; allowed on x86 and ARM64.\n  Fix: Interlocked.Exchange on A2 fences it before A3; a Suspend barrier would come too late.\n\nFinding 3: write threadId=0, write localCurrentEpoch=0 (Release, plain stores)\n  A (Release): 1. threadId[s] = 0   2. lce[s] = 0\n  C (claim):   1. CAS lce[s] 0->epoch   2. threadId[s] = C\n  Bad outcome: A1 lands after C2 -> C's threadId wiped.\n  Store->store reordering in A; ARM64 only.\n  Fix: Interlocked.Exchange on A2 keeps A1 ahead of it, as the release store did.\n\nFindings 1 and 2 are the same store->load pattern (slot clear, then counter read).\nOne full fence on the clear (Interlocked.Exchange) fixes both and also gives the\nstore ordering Finding 3 needs.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 146f7b3c-7f4e-41f9-b8c1-836075480226\n\n* augment benchmark for BDN\n\n* augmented pressure BDN for LightEpoch\n\nAdds EpochReleaseTests/EpochReleaseWorkload: concurrent Resume/Suspend\nbenchmarks with Stable, DrainPressure and WaiterPressure workloads,\noptional deterministic jitter, and 2/8 pinned persistent workers, for\nboth Tsavorite.core and Garnet.client LightEpoch. Keeps alternate-slot\nprobing in the NoInlining TryAcquireEntrySlow helper.\n\nNoInlining slow acquisition path (TryAcquireEntrySlow):\nMoving alternate-slot probing out of the AggressiveInlining TryAcquireEntry\nfast path keeps the inlined Resume/Suspend code small. With Tiered PGO on,\nthe inlined probe loop bloated the hot loop and made Release repeat the\nthread-static Metadata.Entries lookup. Disassembly of a Tsavorite\nResume/Suspend loop shows Tier1 code shrinking from 1393 to 855 bytes and\nthe lookups dropping from 3 to 2 per pair. PGO-off code already\ndid 2 lookups and is unchanged.\n\nSetup: 1 thread pinned to CPU 0, Windows, AMD Ryzen 7 PRO 7840U, .NET 10,\nBDN 0.15.8, ReadyToRun off, 100,000 ops per invocation. Baseline 63ff9a950\nvs baseline + NoInlining helper; ABBA order, 2 launches per revision.\nResumeSuspend is one Resume + Suspend pair; ProtectAndDrain is a control.\n\n| Library   | Method          | PGO | Before ns/op | After ns/op | Change |\n|-----------|-----------------|-----|--------------|-------------|--------|\n| Client    | ResumeSuspend   | on  | 6.568        | 3.665       | -44.2% |\n| Client    | ResumeSuspend   | off | 5.418        | 5.410       | -0.2%  |\n| Client    | ProtectAndDrain | on  | 0.838        | 0.833       | -0.5%  |\n| Client    | ProtectAndDrain | off | 0.988        | 1.021       | +3.3%  |\n| Tsavorite | ResumeSuspend   | on  | 6.327        | 3.704       | -41.5% |\n| Tsavorite | ResumeSuspend   | off | 5.326        | 5.427       | +1.9%  |\n| Tsavorite | ProtectAndDrain | on  | 0.836        | 0.839       | +0.4%  |\n| Tsavorite | ProtectAndDrain | off | 1.197        | 1.171       | -2.2%  |\n\nThis is an uncontended single-thread micro-benchmark on a different host\nfrom the evaluation below; the gain in real call sites is expected to be\nsmaller.\n\nEvaluation (https://gist.github.com/vazois/ccacfe7b694d20ed19eff49624106c69)\ncompares production Release (Interlocked.Exchange) against:\n- Fence: Volatile.Write + Thread.MemoryBarrier before waiter/drain checks.\n- Volatile-only: Volatile.Write alone; intentionally unsafe diagnostic.\n\nSetup: Windows Server 2022, 2x AMD EPYC 7413 (96 logical), .NET 10.0.13,\nBDN 0.15.8, Tiered PGO on, concurrent workstation GC. Two independent\n240-case campaigns (480 cases) with fresh Exchange controls each; not a\nsingle three-way trial. Same-NUMA: ABBAABBA, 4 launch pairs per row.\nCross-NUMA: ABBA, 2 exploratory pairs. 65,536 worker pairs per invocation.\nValues are aggregate elapsed ns per worker Resume/Suspend pair (includes\nacquire, jitter and coordination), not isolated Release latency.\nJitter=8 is a 0..8 SpinWait iteration bound, not 8 ns.\n\nFindings:\n- Stable: release choice is mostly within noise; Volatile-only primary\n  95% CIs include zero (no-jitter).\n- WaiterPressure: Exchange can cost more. 2 workers vs Volatile-only:\n  +1.7-1.8 ns (+8%), CIs exclude zero. 8 workers vs Fence, no jitter:\n  core +1.20 ns (+12.5%), client +1.44 ns (+15.0%).\n- DrainPressure: mostly broad intervals.\n- x64 codegen: Fence = mov + lock or [rsp],0; Exchange = xchg;\n  Volatile-only = mov with no full fence.\n- No hang observed does not make Volatile-only safe; it lacks store->load\n  ordering before waiter/drain checks. Production Release stays Exchange.\n\nSame NUMA (old -> Exchange ns/op; positive change = Exchange slower):\n\n| Library   | W | Workload       | J | Fence -> Exchange ns/op | Change  | Volatile -> Exchange ns/op | Change  |\n|-----------|---|----------------|---|-------------------------|---------|----------------------------|---------|\n| Client    | 2 | Stable         | 0 | 9.662 -> 9.334          | -3.39%  | 9.763 -> 9.544             | -2.24%  |\n| Client    | 2 | Stable         | 8 | 153.876 -> 154.038      | +0.11%  | 153.816 -> 154.234         | +0.27%  |\n| Client    | 8 | Stable         | 0 | 4.056 -> 4.410          | +8.73%  | 4.163 -> 4.294             | +3.14%  |\n| Client    | 8 | Stable         | 8 | 40.483 -> 40.525        | +0.10%  | 40.503 -> 40.290           | -0.52%  |\n| Tsavorite | 2 | Stable         | 0 | 9.726 -> 9.711          | -0.15%  | 9.665 -> 9.596             | -0.72%  |\n| Tsavorite | 2 | Stable         | 8 | 154.082 -> 153.983      | -0.06%  | 154.362 -> 154.028         | -0.22%  |\n| Tsavorite | 8 | Stable         | 0 | 4.382 -> 4.121          | -5.95%  | 4.285 -> 4.265             | -0.46%  |\n| Tsavorite | 8 | Stable         | 8 | 40.609 -> 40.469        | -0.35%  | 40.421 -> 40.273           | -0.37%  |\n| Client    | 2 | DrainPressure  | 0 | 87.102 -> 91.317        | +4.84%  | 77.913 -> 90.928           | +16.71% |\n| Client    | 2 | DrainPressure  | 8 | 217.893 -> 220.280      | +1.10%  | 217.688 -> 220.348         | +1.22%  |\n| Client    | 8 | DrainPressure  | 0 | 108.096 -> 113.280      | +4.80%  | 97.020 -> 99.626           | +2.69%  |\n| Client    | 8 | DrainPressure  | 8 | 144.884 -> 147.315      | +1.68%  | 147.811 -> 133.680         | -9.56%  |\n| Tsavorite | 2 | DrainPressure  | 0 | 87.254 -> 90.503        | +3.72%  | 82.127 -> 89.307           | +8.74%  |\n| Tsavorite | 2 | DrainPressure  | 8 | 218.370 -> 210.695      | -3.51%  | 216.807 -> 220.747         | +1.82%  |\n| Tsavorite | 8 | DrainPressure  | 0 | 106.091 -> 115.784      | +9.14%  | 107.542 -> 112.478         | +4.59%  |\n| Tsavorite | 8 | DrainPressure  | 8 | 125.099 -> 128.352      | +2.60%  | 138.624 -> 146.569         | +5.73%  |\n| Client    | 2 | WaiterPressure | 0 | 23.301 -> 22.910        | -1.68%  | 21.024 -> 22.830           | +8.59%  |\n| Client    | 2 | WaiterPressure | 8 | 288.780 -> 258.131      | -10.61% | 289.332 -> 290.059         | +0.25%  |\n| Client    | 8 | WaiterPressure | 0 | 9.567 -> 11.002         | +15.00% | 10.369 -> 11.059           | +6.66%  |\n| Client    | 8 | WaiterPressure | 8 | 89.926 -> 97.542        | +8.47%  | 91.300 -> 95.154           | +4.22%  |\n| Tsavorite | 2 | WaiterPressure | 0 | 23.254 -> 22.112        | -4.91%  | 21.136 -> 22.852           | +8.12%  |\n| Tsavorite | 2 | WaiterPressure | 8 | 289.712 -> 289.636      | -0.03%  | 289.928 -> 289.765         | -0.06%  |\n| Tsavorite | 8 | WaiterPressure | 0 | 9.580 -> 10.777         | +12.50% | 10.745 -> 10.859           | +1.06%  |\n| Tsavorite | 8 | WaiterPressure | 8 | 90.806 -> 92.247        | +1.59%  | 91.200 -> 89.414           | -1.96%  |\n\nCross NUMA, 8 workers (old -> Exchange ns/op; exploratory, 2 launch pairs):\n\n| Library   | Workload       | J | Fence -> Exchange ns/op | Change  | Volatile -> Exchange ns/op | Change |\n|-----------|----------------|---|-------------------------|---------|----------------------------|--------|\n| Client    | Stable         | 0 | 4.782 -> 4.742          | -0.84%  | 4.796 -> 4.672             | -2.59% |\n| Client    | Stable         | 8 | 40.740 -> 40.873        | +0.33%  | 40.729 -> 40.805           | +0.19% |\n| Tsavorite | Stable         | 0 | 4.872 -> 4.731          | -2.89%  | 4.693 -> 4.763             | +1.50% |\n| Tsavorite | Stable         | 8 | 40.784 -> 40.760        | -0.06%  | 40.844 -> 40.811           | -0.08% |\n| Client    | DrainPressure  | 0 | 139.883 -> 141.007      | +0.80%  | 142.034 -> 140.675         | -0.96% |\n| Client    | DrainPressure  | 8 | 183.071 -> 183.941      | +0.47%  | 166.195 -> 179.723         | +8.14% |\n| Tsavorite | DrainPressure  | 0 | 141.546 -> 137.329      | -2.98%  | 144.653 -> 147.746         | +2.14% |\n| Tsavorite | DrainPressure  | 8 | 189.989 -> 182.497      | -3.94%  | 189.772 -> 192.639         | +1.51% |\n| Client    | WaiterPressure | 0 | 10.986 -> 12.317        | +12.11% | 11.749 -> 12.035           | +2.44% |\n| Client    | WaiterPressure | 8 | 107.952 -> 116.046      | +7.50%  | 106.813 -> 115.278         | +7.93% |\n| Tsavorite | WaiterPressure | 0 | 10.554 -> 12.173        | +15.35% | 12.020 -> 11.992           | -0.23% |\n| Tsavorite | WaiterPressure | 8 | 107.151 -> 115.763      | +8.04%  | 107.162 -> 115.415         | +7.70% |\n\nThe gist has the raw measurements and a 95% confidence interval for each\nrow's ns/op difference. Results cover x64 epoch micro-benchmarks only;\nARM64, CPU hardware counters and end-to-end Garnet throughput were not\nmeasured.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 146f7b3c-7f4e-41f9-b8c1-836075480226\n\n* remove GarnetClient and replace it with GarnetLightClient\n\n* harden re-connect guarantees\n\n* add fix CI ScheduledCheckpointFollowsPrimaryAndReplicates\n\n* remove litmus\n\n* improve safe testing using cts; cap bit max for maxOustandingRequests\n\n* serialize CONFIG SET to ensure grouped SETS are atomic\n\n* ensure connection swap is registered with TaskManager\n\n---------\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 146f7b3c-7f4e-41f9-b8c1-836075480226",
-          "timestamp": "2026-11-03T10:56:34-08:00",
-          "tree_id": "1324780628b21ddf8bf75e7d53f25237d3703811",
-          "url": "https://github.com/microsoft/garnet/commit/3d104a76ec410499545bc7fb39d0e3168f8ee709"
-        },
-        "date": 1793734007864,
-        "tool": "benchmarkdotnet",
-        "benches": [
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Managed,Limit)",
-            "value": 35332.075119018555,
-            "unit": "ns",
-            "range": "± 636.4810250877977"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Managed,Limit)",
-            "value": 7359.076407296317,
-            "unit": "ns",
-            "range": "± 241.60056048238548"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Managed,Limit)",
-            "value": 7432.394568125407,
-            "unit": "ns",
-            "range": "± 185.65486547088315"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Managed,Limit)",
-            "value": 46916.68212890625,
-            "unit": "ns",
-            "range": "± 707.4802044162129"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Managed,Limit)",
-            "value": 16232.401602608817,
-            "unit": "ns",
-            "range": "± 140.4712876765622"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Managed,Limit)",
-            "value": 42203.316345214844,
-            "unit": "ns",
-            "range": "± 960.7677214964299"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Managed,Limit)",
-            "value": 2943435.230654762,
-            "unit": "ns",
-            "range": "± 68909.04089561994"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Managed,Limit)",
-            "value": 88355.89398256282,
-            "unit": "ns",
-            "range": "± 6210.683361370342"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Managed,None)",
-            "value": 35496.995192307695,
-            "unit": "ns",
-            "range": "± 315.3073479815517"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Managed,None)",
-            "value": 6854.55904006958,
-            "unit": "ns",
-            "range": "± 133.8162949501018"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Managed,None)",
-            "value": 6439.026750837053,
-            "unit": "ns",
-            "range": "± 108.80577795618"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Managed,None)",
-            "value": 46731.98828125,
-            "unit": "ns",
-            "range": "± 1037.8831271878946"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Managed,None)",
-            "value": 15789.332463191105,
-            "unit": "ns",
-            "range": "± 142.03071626626237"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Managed,None)",
-            "value": 42560.73128836496,
-            "unit": "ns",
-            "range": "± 722.6848919883896"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Managed,None)",
-            "value": 2907741.2434895835,
-            "unit": "ns",
-            "range": "± 39634.66472134625"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Managed,None)",
-            "value": 90491.98234713808,
-            "unit": "ns",
-            "range": "± 6669.50267267377"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Native,None)",
-            "value": 35794.032639723555,
-            "unit": "ns",
-            "range": "± 223.99974853210637"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Native,None)",
-            "value": 7259.284389720244,
-            "unit": "ns",
-            "range": "± 131.9403544554569"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Native,None)",
-            "value": 6688.758443196614,
-            "unit": "ns",
-            "range": "± 102.8312175656965"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Native,None)",
-            "value": 46832.7157156808,
-            "unit": "ns",
-            "range": "± 492.39447804463197"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Native,None)",
-            "value": 15518.203735351562,
-            "unit": "ns",
-            "range": "± 118.02310197434714"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Native,None)",
-            "value": 42342.19923753005,
-            "unit": "ns",
-            "range": "± 361.7341084688837"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Native,None)",
-            "value": 2430199.1666666665,
-            "unit": "ns",
-            "range": "± 41510.983369794805"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Native,None)",
-            "value": 83615.88604266827,
-            "unit": "ns",
-            "range": "± 795.7112807469119"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Tracked,Limit)",
-            "value": 33287.28506905692,
-            "unit": "ns",
-            "range": "± 485.74549621549704"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Tracked,Limit)",
-            "value": 6924.198968069894,
-            "unit": "ns",
-            "range": "± 92.08100335806559"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Tracked,Limit)",
-            "value": 6401.334991455078,
-            "unit": "ns",
-            "range": "± 67.92781047464265"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Tracked,Limit)",
-            "value": 46570.440266927086,
-            "unit": "ns",
-            "range": "± 860.468173104609"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Tracked,Limit)",
-            "value": 18434.69985961914,
-            "unit": "ns",
-            "range": "± 644.5985643533899"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Tracked,Limit)",
-            "value": 42902.6553067294,
-            "unit": "ns",
-            "range": "± 924.6720587487324"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Tracked,Limit)",
-            "value": 2739534.793526786,
-            "unit": "ns",
-            "range": "± 44471.09559134121"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Tracked,Limit)",
-            "value": 92281.8505859375,
-            "unit": "ns",
-            "range": "± 851.4774330291883"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Tracked,None)",
-            "value": 34303.17818777902,
-            "unit": "ns",
-            "range": "± 387.6079827614218"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Tracked,None)",
-            "value": 7133.753763834636,
-            "unit": "ns",
-            "range": "± 115.09742580500983"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Tracked,None)",
-            "value": 6569.228057861328,
-            "unit": "ns",
-            "range": "± 90.09678759497184"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Tracked,None)",
-            "value": 48028.69826096755,
-            "unit": "ns",
-            "range": "± 475.055131910345"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Tracked,None)",
-            "value": 18566.19110107422,
-            "unit": "ns",
-            "range": "± 294.92641381693204"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Tracked,None)",
-            "value": 41563.291579026445,
-            "unit": "ns",
-            "range": "± 403.2424725516759"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Tracked,None)",
-            "value": 2778120.0613839286,
-            "unit": "ns",
-            "range": "± 33295.05687095393"
-          },
-          {
-            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Tracked,None)",
-            "value": 95891.9931265024,
-            "unit": "ns",
-            "range": "± 794.6981516610238"
-          }
-        ]
-      },
-      {
-        "commit": {
-          "author": {
-            "email": "96085550+vazois@users.noreply.github.com",
-            "name": "Vasileios Zois",
-            "username": "vazois"
-          },
-          "committer": {
-            "email": "noreply@github.com",
-            "name": "GitHub",
-            "username": "web-flow"
-          },
-          "distinct": true,
           "id": "9403f9672505ef1976c2da3b3e5aa6bc92c07faa",
           "message": "[Tests] Stabilize histogram allocation and TLS send-timeout regressions (#2345)\n\n* harden TLS test\n\n* harden CI historgram test",
           "timestamp": "2026-11-03T12:09:46-08:00",
@@ -923349,6 +923085,270 @@ window.BENCHMARK_DATA = {
             "value": 125779.87646484375,
             "unit": "ns",
             "range": "± 3271.754515660828"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "badrishc@microsoft.com",
+            "name": "Badrish Chandramouli",
+            "username": "badrishc"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "390e83362e1ada15f548938d8c3ce041fe759a6f",
+          "message": "Bump Azure.Identity, Azure.Storage.Blobs, MSAL and NUnit; keep SDK on LTS (#2419)\n\nConsolidates the NuGet updates from #2416 and makes them build:\n\n- Azure.Storage.Blobs 12.27.0 -> 12.30.1, Azure.Identity 1.17.0 -> 1.21.0,\n  NUnit 4.5.1 -> 4.6.1.\n- Microsoft.Identity.Client 4.76.0 -> 4.89.0. Azure.Core 1.60.0 requires\n  >= 4.84.2, and the central transitive pin otherwise fails restore with NU1109.\n- Options: build ManagedIdentityCredential from a ManagedIdentityId; the\n  (clientId, TokenCredentialOptions) constructor is obsolete in Azure.Identity\n  1.21. Null/empty maps to SystemAssigned exactly as the old constructor did.\n- RespTests: use Action instead of TestDelegate, obsolete in NUnit 4.6.\n\nDrops the dotnet-sdk 11.0.100 bump from #2414: Garnet tracks LTS releases,\nso Dependabot now ignores dotnet-sdk major-version updates.\n\nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 5c9ec873-851f-49d6-9439-a1a75089365a",
+          "timestamp": "2026-11-23T10:12:46-08:00",
+          "tree_id": "9b724ca21d1e363f100634e13a5b026d74c30f28",
+          "url": "https://github.com/microsoft/garnet/commit/390e83362e1ada15f548938d8c3ce041fe759a6f"
+        },
+        "date": 1795458777212,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Managed,Limit)",
+            "value": 38752.147216796875,
+            "unit": "ns",
+            "range": "± 272.8731177035244"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Managed,Limit)",
+            "value": 10932.945720966045,
+            "unit": "ns",
+            "range": "± 62.14946702161161"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Managed,Limit)",
+            "value": 9001.024678548178,
+            "unit": "ns",
+            "range": "± 65.83957236931033"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Managed,Limit)",
+            "value": 52379.26447941707,
+            "unit": "ns",
+            "range": "± 177.51255964340987"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Managed,Limit)",
+            "value": 22131.542358398438,
+            "unit": "ns",
+            "range": "± 156.70785588341215"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Managed,Limit)",
+            "value": 55718.53681291853,
+            "unit": "ns",
+            "range": "± 248.28688272738003"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Managed,Limit)",
+            "value": 3928536.2760416665,
+            "unit": "ns",
+            "range": "± 33213.46567865292"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Managed,Limit)",
+            "value": 119009.49633789062,
+            "unit": "ns",
+            "range": "± 12275.939051983154"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Managed,None)",
+            "value": 40894.650065104164,
+            "unit": "ns",
+            "range": "± 304.7900917692069"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Managed,None)",
+            "value": 9755.87646484375,
+            "unit": "ns",
+            "range": "± 58.01944539245053"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Managed,None)",
+            "value": 9077.532043457031,
+            "unit": "ns",
+            "range": "± 48.57610266081439"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Managed,None)",
+            "value": 54185.626627604164,
+            "unit": "ns",
+            "range": "± 400.8293687941297"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Managed,None)",
+            "value": 23048.827107747395,
+            "unit": "ns",
+            "range": "± 165.81572767368397"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Managed,None)",
+            "value": 56200.77340262277,
+            "unit": "ns",
+            "range": "± 238.15044999887357"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Managed,None)",
+            "value": 4066258.1770833335,
+            "unit": "ns",
+            "range": "± 50151.85725286675"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Managed,None)",
+            "value": 118190.73785275829,
+            "unit": "ns",
+            "range": "± 10953.937460462572"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Native,None)",
+            "value": 39446.13342285156,
+            "unit": "ns",
+            "range": "± 339.1997177322684"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Native,None)",
+            "value": 9693.985748291016,
+            "unit": "ns",
+            "range": "± 47.424897012950936"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Native,None)",
+            "value": 9906.668795072115,
+            "unit": "ns",
+            "range": "± 59.49524032022933"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Native,None)",
+            "value": 53497.50758579799,
+            "unit": "ns",
+            "range": "± 144.83947265188428"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Native,None)",
+            "value": 22481.715698242188,
+            "unit": "ns",
+            "range": "± 239.42118156614822"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Native,None)",
+            "value": 55154.1074625651,
+            "unit": "ns",
+            "range": "± 318.23955719140696"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Native,None)",
+            "value": 3348363.8521634615,
+            "unit": "ns",
+            "range": "± 11697.728510505178"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Native,None)",
+            "value": 106703.63444010417,
+            "unit": "ns",
+            "range": "± 595.3867677603495"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Tracked,Limit)",
+            "value": 39607.83894856771,
+            "unit": "ns",
+            "range": "± 244.09714694935937"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Tracked,Limit)",
+            "value": 10061.81162516276,
+            "unit": "ns",
+            "range": "± 79.03858367976461"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Tracked,Limit)",
+            "value": 9078.282877604166,
+            "unit": "ns",
+            "range": "± 49.457717440820694"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Tracked,Limit)",
+            "value": 53162.097981770836,
+            "unit": "ns",
+            "range": "± 349.54519171988017"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Tracked,Limit)",
+            "value": 27033.663431803387,
+            "unit": "ns",
+            "range": "± 62.66787974370968"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Tracked,Limit)",
+            "value": 55584.94655064174,
+            "unit": "ns",
+            "range": "± 784.8673056724843"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Tracked,Limit)",
+            "value": 3825156.484375,
+            "unit": "ns",
+            "range": "± 23143.50355887816"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Tracked,Limit)",
+            "value": 120805.31005859375,
+            "unit": "ns",
+            "range": "± 775.3394911886901"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptLoad(Params: Tracked,None)",
+            "value": 39697.19787597656,
+            "unit": "ns",
+            "range": "± 421.5449529989424"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsTrue(Params: Tracked,None)",
+            "value": 10255.499703543526,
+            "unit": "ns",
+            "range": "± 100.75157183528185"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ScriptExistsFalse(Params: Tracked,None)",
+            "value": 9050.112915039062,
+            "unit": "ns",
+            "range": "± 66.37460526134146"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.Eval(Params: Tracked,None)",
+            "value": 53060.713849748885,
+            "unit": "ns",
+            "range": "± 210.8464460563048"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.EvalSha(Params: Tracked,None)",
+            "value": 22963.298746744793,
+            "unit": "ns",
+            "range": "± 156.06788547331348"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.SmallScript(Params: Tracked,None)",
+            "value": 53885.215657552086,
+            "unit": "ns",
+            "range": "± 305.5379136235329"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.LargeScript(Params: Tracked,None)",
+            "value": 3703681.0416666665,
+            "unit": "ns",
+            "range": "± 16307.28571453712"
+          },
+          {
+            "name": "BDN.benchmark.Operations.ScriptOperations.ArrayReturn(Params: Tracked,None)",
+            "value": 120554.02221679688,
+            "unit": "ns",
+            "range": "± 447.816893284293"
           }
         ]
       }
