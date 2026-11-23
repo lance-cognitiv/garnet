@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1795467860653,
+  "lastUpdate": 1795467872318,
   "repoUrl": "https://github.com/microsoft/garnet",
   "entries": {
     "Benchmark": [],
@@ -823141,210 +823141,6 @@ window.BENCHMARK_DATA = {
       {
         "commit": {
           "author": {
-            "email": "matrembl@microsoft.com",
-            "name": "Mathieu Tremblay",
-            "username": "Mathos1432"
-          },
-          "committer": {
-            "email": "noreply@github.com",
-            "name": "GitHub",
-            "username": "web-flow"
-          },
-          "distinct": true,
-          "id": "a8998967c14a1e0616774904a6c86cfe0aef2876",
-          "message": "[Storage] Preserve imported ETags through migration and replay (#2278)\n\n* Preserve entity tags and expiry when importing records\n\nAdd record-copy, rename, migration and diskless snapshot regressions. Runtime validation is blocked by unavailable diskann-garnet 8.0.0; no passing test run is claimed.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Preserve imported entity tags through append-only replay\n\nLog original entity tags and absolute expiration in a distinct version-6 record upsert operation. Restore metadata during ordinary and chunked replay, and retain legacy version-4 and version-5 input layouts. Document replica-first upgrades because older readers reject version-6 headers before application and cluster gossip does not negotiate log formats.\n\nAdd import recovery, migration replica recovery, actual ordinary and chunked log boundary, truncated metadata, and legacy format regressions. Runtime tests and compilation remain blocked by unavailable diskann-garnet 8.0.0; only syntax parsing and whitespace checks passed. No observed failing/passing regression cycle is claimed.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Validate imported record inputs before replay allocation\n\nBound header and argument prefixes within the legacy input portion before unsafe decoding or argument-buffer allocation. Cover negative and oversized prefixes, valid empty and nonempty arguments, and actual ordinary/chunked replay rejection without changing the destination.\n\nCorrect test processor disposal, required log page sizes, existing ordinary SET expectations, and migration recovery assertions. Migration coverage verifies destination replica metadata before restart, then recovered primary metadata and conditional updates afterward; automatic replica stream resumption after primary restart is outside this regression.\n\nValidated 177 standalone tests, 12 migration/replica/recovery tests, and 4 diskless snapshot tests. The negative-count regression failed before the decoder correction. Temporary regression-control runs restoring original tag-dropping sizing failed 12 cases, and omitting logged tags failed 32 recovery cases. All controls were removed before final validation. Exact diskann-garnet 8.0.0 was downloaded through the alternate NuGet endpoint; dependencies and repository feeds are unchanged.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Bound imported record decoding during replica transaction classification\n\nUse the checked record-input decoder with the actual ordinary-entry or assembled chunk input length before classifying vector renames. Preserve existing legacy operation decoding and valid record layouts.\n\nExercise actual two-log replica transaction buffering, classification, and commit boundaries using ordinary and serialized chunked imports. Reject negative and oversized header, count, and argument lengths during classification with the destination unchanged. The negative-count cases failed before correction because rejection happened only during operation dispatch. All 189 selected import, replay, format, legacy-version, entity-tag, and rename tests pass. Repository whitespace checks pass.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Storage] Preserve imported metadata with version-five log entries\n\nEncode imported replacements with existing delete and SETIFGREATER or SET entries. Reuse enclosing transactions and retain exact tags and absolute expiration. Remove the version-six operation and decoder, and document ordinary GET replica visibility.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Tests] Consolidate cluster entity-tag coverage and support documentation\n\nInclude the reviewed cluster routing, replica, concurrency, failover, and expiration cases with the import preservation fix. Document cluster support, ordinary GET replica visibility, and recreation semantics.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Tests] Fix cluster formatting and trace import recovery ordering\n\nUse collection expressions required by the CI formatter. Preserve the checkpoint race workload and assertions while recording committed operation versions, session identifiers, commands, and recovered store version to diagnose the hosted Windows mismatch.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Storage] Continue single-log recovery after truncated transactions\n\nSkip sequence-manager updates in single-log replay when checkpoint truncation leaves an unmatched commit or abort. Add deterministic restart regressions for both markers and physical-log configurations, surface recovery errors in import tests, and remove temporary diagnostics. Document the downlevel checkpoint-tail recovery limitation.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* [Docs] Remove redundant entity-tag cluster support section\n\nKeep command and recreation semantics without a separate cluster support section. Retain upgrade and recovery constraints in the append-only record layout documentation.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Remove obsolete import compatibility scaffolding\n\nRestore the unchanged downlevel recovery test, remove unused import-test setup and diagnostics, and keep the record-layout documentation focused on imported encoding and recovery limits.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Clarify imported input documentation and entity-tag warning\n\nDocument the imported input fields and their serialization, restore the requested non-ETag warning wording, and remove the added recreation section.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Allocate import transaction vector only for selected sublog\n\nExercise the last physical sublog explicitly in import replay tests while preserving transaction and metadata assertions.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* Pass source records to final upsert logging callbacks\n\nRead imported metadata directly from the source record at the final callback. Preserve legacy value callbacks through default forwarding and remove redundant input metadata capture and restoration.\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\n\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c\n\n* utilize an internal SET variant to stream etag to replica instead of transaction DEL/SETIFGREATER\n\n* fix CI vector test failures due to missing namespace check\n\n---------\n\nCo-authored-by: Copilot App <223556219+Copilot@users.noreply.github.com>\nCo-authored-by: Vasileios Zois <vazois@microsoft.com>\nCopilot-Session: 4cd01765-c437-4aee-a8b2-4c2e4a9a2f0c",
-          "timestamp": "2026-11-03T09:49:56-05:00",
-          "tree_id": "0508cf08cec0b8ae6497daf8b742e6ebc5828d56",
-          "url": "https://github.com/microsoft/garnet/commit/a8998967c14a1e0616774904a6c86cfe0aef2876"
-        },
-        "date": 1793717687421,
-        "tool": "benchmarkdotnet",
-        "benches": [
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Managed,Limit)",
-            "value": 2376,
-            "unit": "ns",
-            "range": "± 383.7928734317115"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Managed,Limit)",
-            "value": 2621.875,
-            "unit": "ns",
-            "range": "± 337.2343008713831"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Managed,Limit)",
-            "value": 251810,
-            "unit": "ns",
-            "range": "± 5646.974038321204"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Managed,Limit)",
-            "value": 244421.05263157896,
-            "unit": "ns",
-            "range": "± 5410.953802485435"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Managed,Limit)",
-            "value": 10888.297872340425,
-            "unit": "ns",
-            "range": "± 1360.491402602223"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Managed,Limit)",
-            "value": 70294.84536082474,
-            "unit": "ns",
-            "range": "± 15728.38709635928"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Managed,None)",
-            "value": 2273.1958762886597,
-            "unit": "ns",
-            "range": "± 283.4002851965476"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Managed,None)",
-            "value": 2409.278350515464,
-            "unit": "ns",
-            "range": "± 347.0358033362708"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Managed,None)",
-            "value": 262400,
-            "unit": "ns",
-            "range": "± 3154.727831732508"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Managed,None)",
-            "value": 257774.07407407407,
-            "unit": "ns",
-            "range": "± 7077.406771529147"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Managed,None)",
-            "value": 11504.838709677419,
-            "unit": "ns",
-            "range": "± 1592.4766143277977"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Managed,None)",
-            "value": 61694.318181818184,
-            "unit": "ns",
-            "range": "± 8307.043929107718"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Native,None)",
-            "value": 2195.959595959596,
-            "unit": "ns",
-            "range": "± 211.85246691650906"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Native,None)",
-            "value": 2335.4166666666665,
-            "unit": "ns",
-            "range": "± 310.51033262464335"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Native,None)",
-            "value": 192470.58823529413,
-            "unit": "ns",
-            "range": "± 6116.125204921956"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Native,None)",
-            "value": 194647.2972972973,
-            "unit": "ns",
-            "range": "± 9714.686283233055"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Native,None)",
-            "value": 10089.89898989899,
-            "unit": "ns",
-            "range": "± 1145.3985091639013"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Native,None)",
-            "value": 60740.12345679013,
-            "unit": "ns",
-            "range": "± 4425.822097031002"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Tracked,Limit)",
-            "value": 2424.468085106383,
-            "unit": "ns",
-            "range": "± 343.5851994674216"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Tracked,Limit)",
-            "value": 2422,
-            "unit": "ns",
-            "range": "± 297.660914804111"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Tracked,Limit)",
-            "value": 263279.012345679,
-            "unit": "ns",
-            "range": "± 13738.401617813686"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Tracked,Limit)",
-            "value": 257453.57142857142,
-            "unit": "ns",
-            "range": "± 7308.162972440205"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Tracked,Limit)",
-            "value": 12933.707865168539,
-            "unit": "ns",
-            "range": "± 785.6589330886408"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Tracked,Limit)",
-            "value": 60987.5,
-            "unit": "ns",
-            "range": "± 1186.5215267045655"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Tracked,None)",
-            "value": 2523.404255319149,
-            "unit": "ns",
-            "range": "± 466.149990148054"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Tracked,None)",
-            "value": 2197.8947368421054,
-            "unit": "ns",
-            "range": "± 290.6262304456849"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Tracked,None)",
-            "value": 238937.5,
-            "unit": "ns",
-            "range": "± 4341.716250516609"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Tracked,None)",
-            "value": 248341.50943396226,
-            "unit": "ns",
-            "range": "± 10263.57326369975"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Tracked,None)",
-            "value": 11928.57142857143,
-            "unit": "ns",
-            "range": "± 1049.1568799422512"
-          },
-          {
-            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Tracked,None)",
-            "value": 60701.851851851854,
-            "unit": "ns",
-            "range": "± 2564.672235540289"
-          }
-        ]
-      },
-      {
-        "commit": {
-          "author": {
             "email": "96085550+vazois@users.noreply.github.com",
             "name": "Vasileios Zois",
             "username": "vazois"
@@ -833335,6 +833131,210 @@ window.BENCHMARK_DATA = {
             "value": 45857.608695652176,
             "unit": "ns",
             "range": "± 10153.711319487273"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "168653085+johnkaram02@users.noreply.github.com",
+            "name": "John Karam",
+            "username": "johnkaram02"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "dabb3de1d9507257440be48d7a30b164f4623e6e",
+          "message": "Return inf and -inf for infinite scores in ZSCAN (#2308)\n\nZSCAN formatted member scores with Utf8Formatter, which writes\n\"Infinity\" and \"-Infinity\" for infinite values. Redis, and other Garnet\nsorted set replies such as ZSCORE and ZRANGE WITHSCORES, use \"inf\" and\n\"-inf\".\n\nWrite \"inf\" and \"-inf\" for infinite scores so ZSCAN replies match Redis.\n\nCo-authored-by: Badrish Chandramouli <badrishc@microsoft.com>\nCo-authored-by: Vasileios Zois <96085550+vazois@users.noreply.github.com>",
+          "timestamp": "2026-11-23T12:59:00-08:00",
+          "tree_id": "28af2bd392df1cac5f078370edf546974ad6d490",
+          "url": "https://github.com/microsoft/garnet/commit/dabb3de1d9507257440be48d7a30b164f4623e6e"
+        },
+        "date": 1795467814850,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Managed,Limit)",
+            "value": 3273.1958762886597,
+            "unit": "ns",
+            "range": "± 768.184475445938"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Managed,Limit)",
+            "value": 3746.808510638298,
+            "unit": "ns",
+            "range": "± 958.2356241158225"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Managed,Limit)",
+            "value": 280547.0588235294,
+            "unit": "ns",
+            "range": "± 5097.808064141247"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Managed,Limit)",
+            "value": 297135.9375,
+            "unit": "ns",
+            "range": "± 13579.762804898382"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Managed,Limit)",
+            "value": 13936.363636363636,
+            "unit": "ns",
+            "range": "± 1771.7568278556998"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Managed,Limit)",
+            "value": 90808.58585858585,
+            "unit": "ns",
+            "range": "± 18370.039994740608"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Managed,None)",
+            "value": 3016.494845360825,
+            "unit": "ns",
+            "range": "± 586.4228445220391"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Managed,None)",
+            "value": 2890.3225806451615,
+            "unit": "ns",
+            "range": "± 356.02409424114046"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Managed,None)",
+            "value": 287504.0404040404,
+            "unit": "ns",
+            "range": "± 48461.72257500889"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Managed,None)",
+            "value": 299047.82608695654,
+            "unit": "ns",
+            "range": "± 7321.566496889817"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Managed,None)",
+            "value": 14879.12087912088,
+            "unit": "ns",
+            "range": "± 946.1637729409666"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Managed,None)",
+            "value": 89704.16666666667,
+            "unit": "ns",
+            "range": "± 15311.46056264403"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Native,None)",
+            "value": 3323.6559139784945,
+            "unit": "ns",
+            "range": "± 674.1174342060249"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Native,None)",
+            "value": 2963.736263736264,
+            "unit": "ns",
+            "range": "± 423.35078271556927"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Native,None)",
+            "value": 285722,
+            "unit": "ns",
+            "range": "± 63909.35749761201"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Native,None)",
+            "value": 216843.75,
+            "unit": "ns",
+            "range": "± 3669.5083685238633"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Native,None)",
+            "value": 14308.695652173914,
+            "unit": "ns",
+            "range": "± 2628.694247115106"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Native,None)",
+            "value": 74596,
+            "unit": "ns",
+            "range": "± 1984.2042905574683"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Tracked,Limit)",
+            "value": 3186.59793814433,
+            "unit": "ns",
+            "range": "± 834.7440807890591"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Tracked,Limit)",
+            "value": 2619.230769230769,
+            "unit": "ns",
+            "range": "± 74.93587001820033"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Tracked,Limit)",
+            "value": 301296.77419354836,
+            "unit": "ns",
+            "range": "± 7849.011991793096"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Tracked,Limit)",
+            "value": 299206.6666666667,
+            "unit": "ns",
+            "range": "± 4313.842613637879"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Tracked,Limit)",
+            "value": 18457.14285714286,
+            "unit": "ns",
+            "range": "± 2972.2846752079768"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Tracked,Limit)",
+            "value": 95977.41935483871,
+            "unit": "ns",
+            "range": "± 16850.700727477553"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersSmall(Params: Tracked,None)",
+            "value": 2829.775280898876,
+            "unit": "ns",
+            "range": "± 486.2144530780862"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ResetParametersLarge(Params: Tracked,None)",
+            "value": 4119.587628865979,
+            "unit": "ns",
+            "range": "± 1538.1021297404236"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructSmall(Params: Tracked,None)",
+            "value": 314112.63157894736,
+            "unit": "ns",
+            "range": "± 18476.956563573545"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.ConstructLarge(Params: Tracked,None)",
+            "value": 294119.23076923075,
+            "unit": "ns",
+            "range": "± 8221.702789637535"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionSmall(Params: Tracked,None)",
+            "value": 15414.516129032258,
+            "unit": "ns",
+            "range": "± 1354.833951103645"
+          },
+          {
+            "name": "BDN.benchmark.Lua.LuaRunnerOperations.CompileForSessionLarge(Params: Tracked,None)",
+            "value": 91328.72340425532,
+            "unit": "ns",
+            "range": "± 15492.515517579997"
           }
         ]
       }
